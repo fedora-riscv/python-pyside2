@@ -8,7 +8,7 @@
 
 Name:           python-%{pypi_name}
 Version:        5.12.3
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Python bindings for the Qt 5 cross-platform application and UI framework
 
 License:        BSD and GPLv2 and GPLv3 and LGPLv3
@@ -233,6 +233,9 @@ sed -i '/^#!/d' %{buildroot}%{python3_sitearch}/pyside2uic/icon_cache.py
 
 
 %changelog
+* Fri Jul 26 2019 Fedora Release Engineering <releng@fedoraproject.org> - 5.12.3-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_31_Mass_Rebuild
+
 * Sun Jun 09 2019 Richard Shaw <hobbes1069@gmail.com> - 5.12.3-1
 - Update to 5.12.3.
 
