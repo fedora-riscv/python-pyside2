@@ -1,14 +1,15 @@
 %global pypi_name pyside2
 %global camel_name PySide2
 
-# Clang doesn't handle fstack-clash-protection
+# Clang doesn't handle some gcc specific flags.
 %global _optflags %optflags
-%global optflags %(echo %optflags | sed 's/ -fstack-clash-protection//')
+%global optflags %(echo %optflags | sed 's| -fstack-clash-protection||')
 %global optflags %(echo %optflags | sed 's| -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1||')
+%global optflags %(echo %optflags | sed 's| -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1||')
 
 Name:           python-%{pypi_name}
-Version:        5.12.3
-Release:        2%{?dist}
+Version:        5.12.4
+Release:        1%{?dist}
 Summary:        Python bindings for the Qt 5 cross-platform application and UI framework
 
 License:        BSD and GPLv2 and GPLv3 and LGPLv3
@@ -233,6 +234,9 @@ sed -i '/^#!/d' %{buildroot}%{python3_sitearch}/pyside2uic/icon_cache.py
 
 
 %changelog
+* Thu Aug 14 2019 Richard Shaw <hobbes1069@gmail.com> - 5.12.4-1
+- Update to 5.12.4.
+
 * Fri Jul 26 2019 Fedora Release Engineering <releng@fedoraproject.org> - 5.12.3-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_31_Mass_Rebuild
 
