@@ -8,7 +8,7 @@
 %global optflags %(echo %optflags | sed 's| -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1||')
 
 Name:           python-%{pypi_name}
-Version:        5.12.4
+Version:        5.13.1
 Release:        1%{?dist}
 Summary:        Python bindings for the Qt 5 cross-platform application and UI framework
 
@@ -191,7 +191,7 @@ sed -i '/^#!/d' %{buildroot}%{python3_sitearch}/pyside2uic/icon_cache.py
 %license LICENSE.LGPLv3
 %doc README.md
 %doc CHANGES.rst
-%{_libdir}/libpyside2*.so.5.12*
+%{_libdir}/libpyside2*.so.5.13*
 %{python3_sitearch}/%{camel_name}/
 %{python3_sitearch}/%{camel_name}-%{version}-py%{python3_version}.egg-info/
 
@@ -219,7 +219,7 @@ sed -i '/^#!/d' %{buildroot}%{python3_sitearch}/pyside2uic/icon_cache.py
 %files -n python3-shiboken2
 %doc README.shiboken2.md
 %license LICENSE.LGPLv3
-%{_libdir}/libshiboken2*.so.5.12*
+%{_libdir}/libshiboken2*.so.5.13*
 %{python3_sitearch}/shiboken2/
 %{python3_sitearch}/shiboken2-%{version}-py%{python3_version}.egg-info/
 
@@ -234,7 +234,10 @@ sed -i '/^#!/d' %{buildroot}%{python3_sitearch}/pyside2uic/icon_cache.py
 
 
 %changelog
-* Thu Aug 14 2019 Richard Shaw <hobbes1069@gmail.com> - 5.12.4-1
+* Mon Sep 09 2019 Richard Shaw <hobbes1069@gmail.com> - 5.13.1-1
+- Update to 5.13.1.
+
+* Thu Aug 15 2019 Richard Shaw <hobbes1069@gmail.com> - 5.12.4-1
 - Update to 5.12.4.
 
 * Fri Jul 26 2019 Fedora Release Engineering <releng@fedoraproject.org> - 5.12.3-2
