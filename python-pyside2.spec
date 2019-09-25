@@ -9,7 +9,7 @@
 
 Name:           python-%{pypi_name}
 Version:        5.13.1
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Python bindings for the Qt 5 cross-platform application and UI framework
 
 License:        BSD and GPLv2 and GPLv3 and LGPLv3
@@ -234,6 +234,9 @@ sed -i '/^#!/d' %{buildroot}%{python3_sitearch}/pyside2uic/icon_cache.py
 
 
 %changelog
+* Wed Sep 25 2019 Jan Grulich <jgrulich@redhat.com> - 5.13.1-2
+- rebuild (qt5)
+
 * Mon Sep 09 2019 Richard Shaw <hobbes1069@gmail.com> - 5.13.1-1
 - Update to 5.13.1.
 
