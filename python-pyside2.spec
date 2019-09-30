@@ -235,7 +235,7 @@ sed -i '/^#!/d' %{buildroot}%{python3_sitearch}/pyside2uic/icon_cache.py
 
 
 %changelog
-* Wed Sep 18 2019 Richard Shaw <hobbes1069@gmail.com> - 5.12.5-1
+* Mon Sep 30 2019 Richard Shaw <hobbes1069@gmail.com> - 1:5.12.5-1
 - Downgrade to 5.12.5 as the MAJOR & MINOR versions must match Qt.
 
 * Wed Sep 25 2019 Jan Grulich <jgrulich@redhat.com> - 5.13.1-2
