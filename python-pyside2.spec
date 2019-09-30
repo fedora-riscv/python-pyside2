@@ -8,8 +8,9 @@
 %global optflags %(echo %optflags | sed 's| -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1||')
 
 Name:           python-%{pypi_name}
-Version:        5.13.1
-Release:        2%{?dist}
+Epoch:          1
+Version:        5.12.5
+Release:        1%{?dist}
 Summary:        Python bindings for the Qt 5 cross-platform application and UI framework
 
 License:        BSD and GPLv2 and GPLv3 and LGPLv3
@@ -191,7 +192,7 @@ sed -i '/^#!/d' %{buildroot}%{python3_sitearch}/pyside2uic/icon_cache.py
 %license LICENSE.LGPLv3
 %doc README.md
 %doc CHANGES.rst
-%{_libdir}/libpyside2*.so.5.13*
+%{_libdir}/libpyside2*.so.5.12*
 %{python3_sitearch}/%{camel_name}/
 %{python3_sitearch}/%{camel_name}-%{version}-py%{python3_version}.egg-info/
 
@@ -219,7 +220,7 @@ sed -i '/^#!/d' %{buildroot}%{python3_sitearch}/pyside2uic/icon_cache.py
 %files -n python3-shiboken2
 %doc README.shiboken2.md
 %license LICENSE.LGPLv3
-%{_libdir}/libshiboken2*.so.5.13*
+%{_libdir}/libshiboken2*.so.5.12*
 %{python3_sitearch}/shiboken2/
 %{python3_sitearch}/shiboken2-%{version}-py%{python3_version}.egg-info/
 
@@ -234,7 +235,10 @@ sed -i '/^#!/d' %{buildroot}%{python3_sitearch}/pyside2uic/icon_cache.py
 
 
 %changelog
-* Thu Sep 26 2019 Jan Grulich <jgrulich@redhat.com> - 5.13.1-2
+* Mon Sep 30 2019 Richard Shaw <hobbes1069@gmail.com> - 1:5.12.5-1
+- Downgrade to 5.12.5 as the MAJOR & MINOR versions must match Qt.
+
+* Wed Sep 25 2019 Jan Grulich <jgrulich@redhat.com> - 5.13.1-2
 - rebuild (qt5)
 
 * Mon Sep 09 2019 Richard Shaw <hobbes1069@gmail.com> - 5.13.1-1
