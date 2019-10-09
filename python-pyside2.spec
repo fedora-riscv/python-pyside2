@@ -10,7 +10,7 @@
 Name:           python-%{pypi_name}
 Epoch:          1
 Version:        5.12.5
-Release:        1%{?dist}
+Release:        1%{?dist}.1
 Summary:        Python bindings for the Qt 5 cross-platform application and UI framework
 
 License:        BSD and GPLv2 and GPLv3 and LGPLv3
@@ -235,6 +235,9 @@ sed -i '/^#!/d' %{buildroot}%{python3_sitearch}/pyside2uic/icon_cache.py
 
 
 %changelog
+* Wed Oct 09 2019 Rex Dieter <rdieter@fedoraproject.org> - 1:5.12.5-1.1
+- branch rebuild (qt5)
+
 * Mon Sep 30 2019 Richard Shaw <hobbes1069@gmail.com> - 1:5.12.5-1
 - Downgrade to 5.12.5 as the MAJOR & MINOR versions must match Qt.
 
