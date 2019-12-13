@@ -31,37 +31,37 @@ BuildRequires:  python3-sphinx
 BuildRequires:  python3-setuptools
 BuildRequires:  python3-wheel
 # Shiboken2
-BuildRequires:  qt5-qtbase-devel > 5.12
-BuildRequires:  qt5-qtxmlpatterns-devel  > 5.12
+BuildRequires:  qt5-qtbase-devel > 5.13
+BuildRequires:  qt5-qtxmlpatterns-devel  > 5.13
 BuildRequires:  qt5-qtwebkit-devel
 # Needed for Cmake UI Config
 BuildRequires:  qt5-qttools-static
 BuildRequires:  qt5-qtx11extras-devel
 # PySide2
-BuildRequires:  qt5-qtbase-private-devel > 5.12
-BuildRequires:  qt5-qtcharts-devel > 5.12
-BuildRequires:  qt5-qtdatavis3d-devel > 5.12
-BuildRequires:  qt5-qtremoteobjects-devel > 5.12
-BuildRequires:  qt5-qtscript-devel > 5.12
-BuildRequires:  qt5-qtmultimedia-devel > 5.12
-BuildRequires:  qt5-qtxmlpatterns-devel > 5.12
-BuildRequires:  qt5-qttools-devel > 5.12
-BuildRequires:  qt5-qtmultimedia-devel > 5.12
-BuildRequires:  qt5-qtscxml-devel > 5.12
-BuildRequires:  qt5-qtsensors-devel > 5.12
-BuildRequires:  qt5-qtspeech-devel > 5.12
-BuildRequires:  qt5-qtsvg-devel > 5.12
+BuildRequires:  qt5-qtbase-private-devel >= 5.13
+BuildRequires:  qt5-qtcharts-devel > 5.13
+BuildRequires:  qt5-qtdatavis3d-devel > 5.13
+BuildRequires:  qt5-qtremoteobjects-devel > 5.13
+BuildRequires:  qt5-qtscript-devel > 5.13
+BuildRequires:  qt5-qtmultimedia-devel > 5.13
+BuildRequires:  qt5-qtxmlpatterns-devel > 5.13
+BuildRequires:  qt5-qttools-devel > 5.13
+BuildRequires:  qt5-qtmultimedia-devel > 5.13
+BuildRequires:  qt5-qtscxml-devel > 5.13
+BuildRequires:  qt5-qtsensors-devel > 5.13
+BuildRequires:  qt5-qtspeech-devel > 5.13
+BuildRequires:  qt5-qtsvg-devel > 5.13
 %ifnarch ppc64le s390x
-BuildRequires:  qt5-qtwebengine-devel > 5.12
+BuildRequires:  qt5-qtwebengine-devel > 5.13
 %endif
-BuildRequires:  qt5-qtwebsockets-devel > 5.12
-BuildRequires:  qt5-qt3d-devel > 5.12
-BuildRequires:  qt5-qttools-devel > 5.12
+BuildRequires:  qt5-qtwebsockets-devel > 5.13
+BuildRequires:  qt5-qt3d-devel > 5.13
+BuildRequires:  qt5-qttools-devel > 5.13
 
 
 %description
 PySide2 is the official Python module from the Qt for Python project, which
-provides access to the complete Qt 5.12+ framework.
+provides access to the complete Qt 5.13+ framework.
 
 The name Shiboken2 and PySide2 make reference to the Qt 5 compatibility, since
 the previous versions (without the 2) refer to Qt 4.
@@ -74,7 +74,7 @@ Summary:        %{summary}
 
 %description -n python3-%{pypi_name}
 PySide2 is the official Python module from the Qt for Python project, which
-provides access to the complete Qt 5.12+ framework.
+provides access to the complete Qt 5.13+ framework.
 
 The name Shiboken2 and PySide2 make reference to the Qt 5 compatibility, since
 the previous versions (without the 2) refer to Qt 4.
@@ -220,7 +220,7 @@ sed -i '/^#!/d' %{buildroot}%{python3_sitearch}/pyside2uic/icon_cache.py
 %files -n python3-shiboken2
 %doc README.shiboken2.md
 %license LICENSE.LGPLv3
-%{_libdir}/libshiboken2*.so.5.12*
+%{_libdir}/libshiboken2*.so.5.13*
 %{python3_sitearch}/shiboken2/
 %{python3_sitearch}/shiboken2-%{version}-py%{python3_version}.egg-info/
 
