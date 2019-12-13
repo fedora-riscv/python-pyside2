@@ -9,14 +9,14 @@
 
 Name:           python-%{pypi_name}
 Epoch:          1
-Version:        5.12.6
-Release:        2%{?dist}
+Version:        5.13.2
+Release:        1%{?dist}
 Summary:        Python bindings for the Qt 5 cross-platform application and UI framework
 
 License:        BSD and GPLv2 and GPLv3 and LGPLv3
 URL:            https://wiki.qt.io/Qt_for_Python
 
-Source0:        https://download.qt.io/official_releases/QtForPython/%{pypi_name}/%{camel_name}-%{version}-src/pyside-setup-everywhere-src-%{version}.tar.xz
+Source0:        https://download.qt.io/official_releases/QtForPython/%{pypi_name}/%{camel_name}-%{version}-src/pyside-setup-opensource-src-%{version}.tar.xz
 
 # Don't abort the build on Python 3.8
 Patch0:         python38_classifier.patch
@@ -144,7 +144,7 @@ the previous versions (without the 2) refer to Qt 4.
 
 
 %prep
-%autosetup -p1 -n pyside-setup-everywhere-src-%{version}
+%autosetup -p1 -n pyside-setup-opensource-src-%{version}
 
 
 %build
@@ -192,7 +192,7 @@ sed -i '/^#!/d' %{buildroot}%{python3_sitearch}/pyside2uic/icon_cache.py
 %license LICENSE.LGPLv3
 %doc README.md
 %doc CHANGES.rst
-%{_libdir}/libpyside2*.so.5.12*
+%{_libdir}/libpyside2*.so.5.13*
 %{python3_sitearch}/%{camel_name}/
 %{python3_sitearch}/%{camel_name}-%{version}-py%{python3_version}.egg-info/
 
@@ -235,6 +235,9 @@ sed -i '/^#!/d' %{buildroot}%{python3_sitearch}/pyside2uic/icon_cache.py
 
 
 %changelog
+* Fri Dec 13 2019 Richard Shaw <hobbes1069@gmail.com> - 1:5.13.2-1
+- Update to 5.13.2.
+
 * Mon Dec 09 2019 Jan Grulich <jgrulich@redhat.com> - 1:5.12.6-2
 - rebuild (qt5)
 
