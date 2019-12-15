@@ -6,6 +6,7 @@
 %global optflags %(echo %optflags | sed 's| -fstack-clash-protection||')
 %global optflags %(echo %optflags | sed 's| -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1||')
 %global optflags %(echo %optflags | sed 's| -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1||')
+%global _hardening_ldflags %(echo %_hardening_ldflags | sed 's| -specs=/usr/lib/rpm/redhat/redhat-hardened-ld||')
 
 Name:           python-%{pypi_name}
 Epoch:          1
