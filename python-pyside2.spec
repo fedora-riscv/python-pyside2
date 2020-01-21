@@ -19,8 +19,8 @@ URL:            https://wiki.qt.io/Qt_for_Python
 
 Source0:        https://download.qt.io/official_releases/QtForPython/%{pypi_name}/%{camel_name}-%{version}-src/pyside-setup-opensource-src-%{version}.tar.xz
 
-# Don't abort the build on Python 3.8
-Patch0:         python38_classifier.patch
+# Don't abort the build on Python 3.8/3.9
+Patch0:         python_ver_classifier.patch
 
 BuildRequires:  cmake gcc graphviz
 BuildRequires:  clang-devel llvm-devel
