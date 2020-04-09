@@ -11,7 +11,7 @@
 Name:           python-%{pypi_name}
 Epoch:          1
 Version:        5.13.2
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Python bindings for the Qt 5 cross-platform application and UI framework
 
 License:        BSD and GPLv2 and GPLv3 and LGPLv3
@@ -21,6 +21,7 @@ Source0:        https://download.qt.io/official_releases/QtForPython/%{pypi_name
 
 # Don't abort the build on Python 3.8/3.9
 Patch0:         python_ver_classifier.patch
+Patch1:         debug-level.patch
 
 BuildRequires:  cmake gcc graphviz
 BuildRequires:  clang-devel llvm-devel
@@ -236,6 +237,9 @@ sed -i '/^#!/d' %{buildroot}%{python3_sitearch}/pyside2uic/icon_cache.py
 
 
 %changelog
+* Thu Apr  09 2020 Morian Sonnet <MorianSonnet@googlemail.com> - 1:5.13.2-3
+- Fix ignored --debug-level issue
+
 * Thu Jan 30 2020 Fedora Release Engineering <releng@fedoraproject.org> - 1:5.13.2-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_32_Mass_Rebuild
 
