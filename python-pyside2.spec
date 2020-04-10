@@ -35,32 +35,32 @@ BuildRequires:  python3-sphinx
 BuildRequires:  python3-setuptools
 BuildRequires:  python3-wheel
 # Shiboken2
-BuildRequires:  qt5-qtbase-devel > 5.13
-BuildRequires:  qt5-qtxmlpatterns-devel  > 5.13
+BuildRequires:  qt5-qtbase-devel >= %{qt5ver}
+BuildRequires:  qt5-qtxmlpatterns-devel  >= %{qt5ver}
 BuildRequires:  qt5-qtwebkit-devel
 # Needed for Cmake UI Config
 BuildRequires:  qt5-qttools-static
 BuildRequires:  qt5-qtx11extras-devel
 # PySide2
-BuildRequires:  qt5-qtbase-private-devel >= 5.13
-BuildRequires:  qt5-qtcharts-devel > 5.13
-BuildRequires:  qt5-qtdatavis3d-devel > 5.13
-BuildRequires:  qt5-qtremoteobjects-devel > 5.13
-BuildRequires:  qt5-qtscript-devel > 5.13
-BuildRequires:  qt5-qtmultimedia-devel > 5.13
-BuildRequires:  qt5-qtxmlpatterns-devel > 5.13
-BuildRequires:  qt5-qttools-devel > 5.13
-BuildRequires:  qt5-qtmultimedia-devel > 5.13
-BuildRequires:  qt5-qtscxml-devel > 5.13
-BuildRequires:  qt5-qtsensors-devel > 5.13
-BuildRequires:  qt5-qtspeech-devel > 5.13
-BuildRequires:  qt5-qtsvg-devel > 5.13
+BuildRequires:  qt5-qtbase-private-devel >= %{qt5ver}
+BuildRequires:  qt5-qtcharts-devel >= %{qt5ver}
+BuildRequires:  qt5-qtdatavis3d-devel >= %{qt5ver}
+BuildRequires:  qt5-qtremoteobjects-devel >= %{qt5ver}
+BuildRequires:  qt5-qtscript-devel >= %{qt5ver}
+BuildRequires:  qt5-qtmultimedia-devel >= %{qt5ver}
+BuildRequires:  qt5-qtxmlpatterns-devel >= %{qt5ver}
+BuildRequires:  qt5-qttools-devel >= %{qt5ver}
+BuildRequires:  qt5-qtmultimedia-devel >= %{qt5ver}
+BuildRequires:  qt5-qtscxml-devel >= %{qt5ver}
+BuildRequires:  qt5-qtsensors-devel >= %{qt5ver}
+BuildRequires:  qt5-qtspeech-devel >= %{qt5ver}
+BuildRequires:  qt5-qtsvg-devel >= %{qt5ver}
 %ifnarch ppc64le s390x
-BuildRequires:  qt5-qtwebengine-devel > 5.13
+BuildRequires:  qt5-qtwebengine-devel >= %{qt5ver}
 %endif
-BuildRequires:  qt5-qtwebsockets-devel > 5.13
-BuildRequires:  qt5-qt3d-devel > 5.13
-BuildRequires:  qt5-qttools-devel > 5.13
+BuildRequires:  qt5-qtwebsockets-devel >= %{qt5ver}
+BuildRequires:  qt5-qt3d-devel >= %{qt5ver}
+BuildRequires:  qt5-qttools-devel >= %{qt5ver}
 
 
 %description
