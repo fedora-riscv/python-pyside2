@@ -1,5 +1,6 @@
 %global pypi_name pyside2
 %global camel_name PySide2
+%global qt5ver 5.13
 
 # Clang doesn't handle some gcc specific flags.
 %global _optflags %optflags
@@ -21,7 +22,8 @@ Source0:        https://download.qt.io/official_releases/QtForPython/%{pypi_name
 
 # Don't abort the build on Python 3.8/3.9
 Patch0:         python_ver_classifier.patch
-Patch1:         debug-level.patch
+# https://bugzilla.redhat.com/show_bug.cgi?id=1822789
+Patch1:         shiboken-debug-level.patch
 
 BuildRequires:  cmake gcc graphviz
 BuildRequires:  clang-devel llvm-devel
