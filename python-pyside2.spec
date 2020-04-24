@@ -1,6 +1,6 @@
 %global pypi_name pyside2
 %global camel_name PySide2
-%global qt5ver 5.13
+%global qt5ver 5.14
 
 # Clang doesn't handle some gcc specific flags.
 %global _optflags %optflags
@@ -9,23 +9,27 @@
 %global optflags %(echo %optflags | sed 's| -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1||')
 %global _hardening_ldflags %(echo %_hardening_ldflags | sed 's| -specs=/usr/lib/rpm/redhat/redhat-hardened-ld||')
 
+%global mainver 5.14.2
+
 Name:           python-%{pypi_name}
 Epoch:          1
-Version:        5.14.2
+Version:        5.14.2.1
 Release:        1%{?dist}
 Summary:        Python bindings for the Qt 5 cross-platform application and UI framework
 
 License:        BSD and GPLv2 and GPLv3 and LGPLv3
 URL:            https://wiki.qt.io/Qt_for_Python
 
-Source0:        https://download.qt.io/official_releases/QtForPython/%{pypi_name}/%{camel_name}-%{version}-src/pyside-setup-opensource-src-%{version}.tar.xz
+Source0:        https://download.qt.io/official_releases/QtForPython/%{pypi_name}/%{camel_name}-%{mainver}-src/pyside-setup-opensource-src-%{mainver}.tar.xz
 
+# Patch up to 5.14.2.1
+Patch0:         python-pyside2-5.14.2.1.patch
 # Don't abort the build on Python 3.8/3.9
-Patch0:         python_ver_classifier.patch
+Patch1:         python_ver_classifier.patch
 # https://bugzilla.redhat.com/show_bug.cgi?id=1822789
-Patch1:         shiboken-debug-level.patch
+Patch2:         shiboken-debug-level.patch
 # qt5-qtbase-devel tools can now produce python
-Patch2:         pyside2-tools-obsolete.patch
+Patch3:         pyside2-tools-obsolete.patch
 
 BuildRequires:  cmake gcc graphviz
 BuildRequires:  clang-devel llvm-devel
@@ -150,7 +154,7 @@ the previous versions (without the 2) refer to Qt 4.
 
 
 %prep
-%autosetup -p1 -n pyside-setup-opensource-src-%{version}
+%autosetup -p1 -n pyside-setup-opensource-src-%{mainver}
 
 
 %build
@@ -231,6 +235,9 @@ pathfix.py -pni "%{__python3} %{py3_shbang_opts}" %{buildroot}%{_bindir}/*
 
 
 %changelog
+* Fri Apr 24 2020 Richard Shaw <hobbes1069@gmail.com> - 1:5.14.2.1-1
+- Update to 5.14.2.1.
+
 * Fri Apr 10 2020 Richard Shaw <hobbes1069@gmail.com> - 1:5.14.2-1
 - Update to 5.14.2.
 
