@@ -1,6 +1,8 @@
 %global pypi_name pyside2
 %global camel_name PySide2
-%global qt5ver 5.14
+# Lie to PySide2 due to 5.13 bug with Python 3.8.
+# 
+%global qt5ver 5.13
 
 # Clang doesn't handle some gcc specific flags.
 %global _optflags %optflags
