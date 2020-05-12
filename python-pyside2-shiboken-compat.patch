@@ -1,0 +1,80 @@
+From 1a60b3ac4d54535d3d9f78d6ce96871f0526c799 Mon Sep 17 00:00:00 2001
+From: Friedemann Kleint <Friedemann.Kleint@qt.io>
+Date: Tue, 12 May 2020 15:30:41 +0200
+Subject: [PATCH] Revert "Fix deprecation warnings about Qt::SplitBehavior"
+
+This reverts commit 0b7a1be238c585cea66732c4ed3287f325395865.
+
+5.14 is supposed to compile against 5.12, still.
+
+Change-Id: I4170a6f5c1506b123d3a4947b4070be2bf4dd5cd
+---
+ sources/shiboken2/generator/main.cpp                        | 2 +-
+ sources/shiboken2/generator/shiboken2/cppgenerator.cpp      | 8 ++++----
+ sources/shiboken2/generator/shiboken2/shibokengenerator.cpp | 2 +-
+ 3 files changed, 6 insertions(+), 6 deletions(-)
+
+diff --git a/sources/shiboken2/generator/main.cpp b/sources/shiboken2/generator/main.cpp
+index 700dc00bb..25daea99e 100644
+--- a/sources/shiboken2/generator/main.cpp
++++ b/sources/shiboken2/generator/main.cpp
+@@ -370,7 +370,7 @@ static void parseIncludePathOption(const QString &option, HeaderType headerType,
+     const CommandArgumentMap::iterator it = args.find(option);
+     if (it != args.end()) {
+         const QStringList includePathListList =
+-            it.value().split(pathSplitter, Qt::SkipEmptyParts);
++            it.value().split(pathSplitter, QString::SkipEmptyParts);
+         args.erase(it);
+         for (const QString &s : includePathListList) {
+             auto path = QFile::encodeName(QDir::cleanPath(s));
+diff --git a/sources/shiboken2/generator/shiboken2/cppgenerator.cpp b/sources/shiboken2/generator/shiboken2/cppgenerator.cpp
+index 90187ff6b..e453d5cd9 100644
+--- a/sources/shiboken2/generator/shiboken2/cppgenerator.cpp
++++ b/sources/shiboken2/generator/shiboken2/cppgenerator.cpp
+@@ -1509,10 +1509,10 @@ void CppGenerator::writeConverterRegister(QTextStream &s, const AbstractMetaClas
+     QStringList cppSignature;
+     if (!classContext.forSmartPointer()) {
+         cppSignature = metaClass->qualifiedCppName().split(QLatin1String("::"),
+-                                                                       Qt::SkipEmptyParts);
++                                                                       QString::SkipEmptyParts);
+     } else {
+         cppSignature = classContext.preciseType()->cppSignature().split(QLatin1String("::"),
+-                                                                        Qt::SkipEmptyParts);
++                                                                        QString::SkipEmptyParts);
+     }
+     while (!cppSignature.isEmpty()) {
+         QString signature = cppSignature.join(QLatin1String("::"));
+@@ -1960,7 +1960,7 @@ void CppGenerator::writeArgumentsInitializer(QTextStream &s, OverloadData &overl
+ 
+     s << INDENT << "PyObject *";
+     s << PYTHON_ARGS << "[] = {"
+-        << QString(maxArgs, QLatin1Char('0')).split(QLatin1String(""), Qt::SkipEmptyParts).join(QLatin1String(", "))
++        << QString(maxArgs, QLatin1Char('0')).split(QLatin1String(""), QString::SkipEmptyParts).join(QLatin1String(", "))
+         << "};\n";
+     s << endl;
+ 
+@@ -5813,7 +5813,7 @@ bool CppGenerator::finishGeneration()
+         if (!referencedType)
+             continue;
+         QString converter = converterObject(referencedType);
+-        QStringList cppSignature = pte->qualifiedCppName().split(QLatin1String("::"), Qt::SkipEmptyParts);
++        QStringList cppSignature = pte->qualifiedCppName().split(QLatin1String("::"), QString::SkipEmptyParts);
+         while (!cppSignature.isEmpty()) {
+             QString signature = cppSignature.join(QLatin1String("::"));
+             s << INDENT << "Shiboken::Conversions::registerConverterName(" << converter << ", \"" << signature << "\");\n";
+diff --git a/sources/shiboken2/generator/shiboken2/shibokengenerator.cpp b/sources/shiboken2/generator/shiboken2/shibokengenerator.cpp
+index 2cdb8870c..b7852c017 100644
+--- a/sources/shiboken2/generator/shiboken2/shibokengenerator.cpp
++++ b/sources/shiboken2/generator/shiboken2/shibokengenerator.cpp
+@@ -96,7 +96,7 @@ static QString resolveScopePrefix(const QStringList &scopeList, const QString &v
+ 
+ static inline QStringList splitClassScope(const AbstractMetaClass *scope)
+ {
+-    return scope->qualifiedCppName().split(QLatin1String("::"), Qt::SkipEmptyParts);
++    return scope->qualifiedCppName().split(QLatin1String("::"), QString::SkipEmptyParts);
+ }
+ 
+ static QString resolveScopePrefix(const AbstractMetaClass *scope, const QString &value)
+-- 
+2.16.3
+

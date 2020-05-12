@@ -32,6 +32,8 @@ Patch1:         python_ver_classifier.patch
 Patch2:         shiboken-debug-level.patch
 # qt5-qtbase-devel tools can now produce python
 Patch3:         pyside2-tools-obsolete.patch
+# Revert commit to shiboken preventing compatibility with Qt 5.13.
+Patch4:         python-pyside2-shiboken-compat.patch
 
 BuildRequires:  cmake gcc graphviz
 BuildRequires:  clang-devel llvm-devel
