@@ -12,7 +12,7 @@
 Name:           python-%{pypi_name}
 Epoch:          1
 Version:        5.13.2
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        Python bindings for the Qt 5 cross-platform application and UI framework
 
 License:        BSD and GPLv2 and GPLv3 and LGPLv3
@@ -24,6 +24,9 @@ Source0:        https://download.qt.io/official_releases/QtForPython/%{pypi_name
 Patch0:         python_ver_classifier.patch
 # https://bugzilla.redhat.com/show_bug.cgi?id=1822789
 Patch1:         shiboken-debug-level.patch
+# Patches from 5.14.x backported to 5.13.x
+# https://github.com/conda-forge/pyside2-feedstock/tree/master/recipe
+Patch2:         python-pyside2-py38.patch
 
 BuildRequires:  cmake gcc graphviz
 BuildRequires:  clang-devel llvm-devel
@@ -239,6 +242,9 @@ sed -i '/^#!/d' %{buildroot}%{python3_sitearch}/pyside2uic/icon_cache.py
 
 
 %changelog
+* Mon May 18 2020 Richard Shaw <hobbes1069@gmail.com> - 1:5.13.2-4
+- Add patch backporting Python 3.8 support from 5.14.x.
+
 * Thu Apr  09 2020 Morian Sonnet <MorianSonnet@googlemail.com> - 1:5.13.2-3
 - Fix ignored --debug-level issue
 
