@@ -1,7 +1,5 @@
 %global pypi_name pyside2
 %global camel_name PySide2
-# Lie to PySide2 due to 5.13 bug with Python 3.8.
-# 
 %global qt5ver 5.13
 
 # Clang doesn't handle some gcc specific flags.
@@ -11,29 +9,21 @@
 %global optflags %(echo %optflags | sed 's| -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1||')
 %global _hardening_ldflags %(echo %_hardening_ldflags | sed 's| -specs=/usr/lib/rpm/redhat/redhat-hardened-ld||')
 
-%global mainver 5.14.2
-
 Name:           python-%{pypi_name}
 Epoch:          1
-Version:        5.14.2.1
-Release:        1%{?dist}
+Version:        5.13.2
+Release:        3%{?dist}
 Summary:        Python bindings for the Qt 5 cross-platform application and UI framework
 
 License:        BSD and GPLv2 and GPLv3 and LGPLv3
 URL:            https://wiki.qt.io/Qt_for_Python
 
-Source0:        https://download.qt.io/official_releases/QtForPython/%{pypi_name}/%{camel_name}-%{mainver}-src/pyside-setup-opensource-src-%{mainver}.tar.xz
+Source0:        https://download.qt.io/official_releases/QtForPython/%{pypi_name}/%{camel_name}-%{version}-src/pyside-setup-opensource-src-%{version}.tar.xz
 
-# Patch up to 5.14.2.1
-Patch0:         python-pyside2-5.14.2.1.patch
 # Don't abort the build on Python 3.8/3.9
-Patch1:         python_ver_classifier.patch
+Patch0:         python_ver_classifier.patch
 # https://bugzilla.redhat.com/show_bug.cgi?id=1822789
-Patch2:         shiboken-debug-level.patch
-# qt5-qtbase-devel tools can now produce python
-Patch3:         pyside2-tools-obsolete.patch
-# Revert commit to shiboken preventing compatibility with Qt 5.13.
-Patch4:         python-pyside2-shiboken-compat.patch
+Patch1:         shiboken-debug-level.patch
 
 BuildRequires:  cmake gcc graphviz
 BuildRequires:  clang-devel llvm-devel
@@ -158,7 +148,7 @@ the previous versions (without the 2) refer to Qt 4.
 
 
 %prep
-%autosetup -p1 -n pyside-setup-opensource-src-%{mainver}
+%autosetup -p1 -n pyside-setup-opensource-src-%{version}
 
 
 %build
@@ -172,6 +162,9 @@ mkdir %{_target} && cd %{_target}
 cd %{_target}
 %make_install
 cd -
+
+# Remove v2 files that bytecompile chokes on...
+rm -rf %{buildroot}%{python3_sitearch}/pyside2uic/port_v2
 
 # Generate egg-info manually and install since we're performing a cmake build.
 %{__python3} setup.py egg_info
@@ -187,10 +180,15 @@ done
 # -i specifies the interpreter for the shebang
 # Need to list files that do not match ^[a-zA-Z0-9_]+\.py$ explicitly!
 pathfix.py -pni "%{__python3} %{py3_shbang_opts}" %{buildroot}%{_bindir}/*
+pathfix.py -pni "%{__python3} %{py3_shbang_opts}" %{buildroot}%{_bindir}/pyside2-uic
+
+# icon_cache is not executable and therefore  should not have a shebang
+sed -i '/^#!/d' %{buildroot}%{python3_sitearch}/pyside2uic/icon_cache.py
 
 
 %check
 # Lots of tests fail currently
+# Also, the testing doesn't appear to work with the direct CMake build method.
 #{__python3} testrunner.py test
 
 
@@ -198,7 +196,7 @@ pathfix.py -pni "%{__python3} %{py3_shbang_opts}" %{buildroot}%{_bindir}/*
 %license LICENSE.LGPLv3
 %doc README.md
 %doc CHANGES.rst
-%{_libdir}/libpyside2*.so.5.14*
+%{_libdir}/libpyside2*.so.5.13*
 %{python3_sitearch}/%{camel_name}/
 %{python3_sitearch}/%{camel_name}-%{version}-py%{python3_version}.egg-info/
 
@@ -214,17 +212,19 @@ pathfix.py -pni "%{__python3} %{py3_shbang_opts}" %{buildroot}%{_bindir}/*
 %license LICENSE.GPL2
 %{_bindir}/pyside*
 %{_mandir}/man1/pyside*.1*
+%{python3_sitearch}/pyside2uic/
 
 %files -n shiboken2
 %doc README.shiboken2-generator.md
 %license LICENSE.GPLv3
 %{_bindir}/shiboken2
 %{_bindir}/shiboken_tool.py
+%{_mandir}/man1/shiboken2.1.*
 
 %files -n python3-shiboken2
 %doc README.shiboken2.md
 %license LICENSE.LGPLv3
-%{_libdir}/libshiboken2*.so.5.14*
+%{_libdir}/libshiboken2*.so.5.13*
 %{python3_sitearch}/shiboken2/
 %{python3_sitearch}/shiboken2-%{version}-py%{python3_version}.egg-info/
 
@@ -239,12 +239,6 @@ pathfix.py -pni "%{__python3} %{py3_shbang_opts}" %{buildroot}%{_bindir}/*
 
 
 %changelog
-* Fri Apr 24 2020 Richard Shaw <hobbes1069@gmail.com> - 1:5.14.2.1-1
-- Update to 5.14.2.1.
-
-* Fri Apr 10 2020 Richard Shaw <hobbes1069@gmail.com> - 1:5.14.2-1
-- Update to 5.14.2.
-
 * Thu Apr  09 2020 Morian Sonnet <MorianSonnet@googlemail.com> - 1:5.13.2-3
 - Fix ignored --debug-level issue
 

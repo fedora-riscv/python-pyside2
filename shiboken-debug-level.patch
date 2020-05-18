@@ -7,10 +7,10 @@ Subject: [PATCH] shiboken2: Activate debug Logging Categories
  sources/shiboken2/generator/main.cpp | 1 +
  1 file changed, 1 insertion(+)
 
-Index: pyside-setup-opensource-src-5.14.2/sources/shiboken2/generator/main.cpp
-===================================================================
---- pyside-setup-opensource-src-5.14.2.orig/sources/shiboken2/generator/main.cpp
-+++ pyside-setup-opensource-src-5.14.2/sources/shiboken2/generator/main.cpp
+diff --git a/sources/shiboken2/generator/main.cpp b/sources/shiboken2/generator/main.cpp
+index 25daea99..891b3e7d 100644
+--- a/sources/shiboken2/generator/main.cpp
++++ b/sources/shiboken2/generator/main.cpp
 @@ -387,6 +387,7 @@ int main(int argc, char *argv[])
      // needed by qxmlpatterns
      QCoreApplication app(argc, argv);
@@ -19,3 +19,6 @@ Index: pyside-setup-opensource-src-5.14.2/sources/shiboken2/generator/main.cpp
      qCDebug(lcShiboken()).noquote().nospace() << QCoreApplication::arguments().join(QLatin1Char(' '));
  
      // Store command arguments in a map
+-- 
+2.25.2
+
