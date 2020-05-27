@@ -236,6 +236,9 @@ pathfix.py -pni "%{__python3} %{py3_shbang_opts}" %{buildroot}%{_bindir}/*
 * Wed May 27 2020 Richard Shaw <hobbes1069@gmail.com> - 1:5.14.2.2-1
 - Update to 5.14.2.2.
 
+* Tue May 26 2020 Miro Hrončok <mhroncok@redhat.com> - 1:5.14.2.1-2
+- Rebuilt for Python 3.9
+
 * Fri Apr 24 2020 Richard Shaw <hobbes1069@gmail.com> - 1:5.14.2.1-1
 - Update to 5.14.2.1.
 
