@@ -1,5 +1,6 @@
 %global pypi_name pyside2
 %global camel_name PySide2
+%global mainver 5.14.2
 %global qt5ver 5.14
 
 # Clang doesn't handle some gcc specific flags.
@@ -9,21 +10,18 @@
 %global optflags %(echo %optflags | sed 's| -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1||')
 %global _hardening_ldflags %(echo %_hardening_ldflags | sed 's| -specs=/usr/lib/rpm/redhat/redhat-hardened-ld||')
 
-%global mainver 5.14.2
 
 Name:           python-%{pypi_name}
 Epoch:          1
-Version:        5.14.2.1
+Version:        5.14.2.2
 Release:        1%{?dist}
 Summary:        Python bindings for the Qt 5 cross-platform application and UI framework
 
 License:        BSD and GPLv2 and GPLv3 and LGPLv3
 URL:            https://wiki.qt.io/Qt_for_Python
 
-Source0:        https://download.qt.io/official_releases/QtForPython/%{pypi_name}/%{camel_name}-%{mainver}-src/pyside-setup-opensource-src-%{mainver}.tar.xz
+Source0:        https://download.qt.io/official_releases/QtForPython/%{pypi_name}/%{camel_name}-%{version}-src/pyside-setup-opensource-src-%{version}.tar.xz
 
-# Patch up to 5.14.2.1
-Patch0:         python-pyside2-5.14.2.1.patch
 # Don't abort the build on Python 3.8/3.9
 Patch1:         python_ver_classifier.patch
 # https://bugzilla.redhat.com/show_bug.cgi?id=1822789
@@ -235,6 +233,9 @@ pathfix.py -pni "%{__python3} %{py3_shbang_opts}" %{buildroot}%{_bindir}/*
 
 
 %changelog
+* Wed May 27 2020 Richard Shaw <hobbes1069@gmail.com> - 1:5.14.2.2-1
+- Update to 5.14.2.2.
+
 * Fri Apr 24 2020 Richard Shaw <hobbes1069@gmail.com> - 1:5.14.2.1-1
 - Update to 5.14.2.1.
 
