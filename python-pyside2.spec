@@ -1,6 +1,6 @@
 %global pypi_name pyside2
 %global camel_name PySide2
-%global qt5ver 5.13
+%global qt5ver 5.14
 
 # Clang doesn't handle some gcc specific flags.
 %global _optflags %optflags
@@ -9,10 +9,11 @@
 %global optflags %(echo %optflags | sed 's| -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1||')
 %global _hardening_ldflags %(echo %_hardening_ldflags | sed 's| -specs=/usr/lib/rpm/redhat/redhat-hardened-ld||')
 
+
 Name:           python-%{pypi_name}
 Epoch:          1
-Version:        5.13.2
-Release:        4%{?dist}
+Version:        5.15.0
+Release:        1%{?dist}
 Summary:        Python bindings for the Qt 5 cross-platform application and UI framework
 
 License:        BSD and GPLv2 and GPLv3 and LGPLv3
@@ -20,15 +21,18 @@ URL:            https://wiki.qt.io/Qt_for_Python
 
 Source0:        https://download.qt.io/official_releases/QtForPython/%{pypi_name}/%{camel_name}-%{version}-src/pyside-setup-opensource-src-%{version}.tar.xz
 
+# PySide2 tools are "reinstalled" for pip installs but breaks distro builds.
+Patch0:         pyside2-tools-obsolete.patch
 # Don't abort the build on Python 3.8/3.9
-Patch0:         python_ver_classifier.patch
-# https://bugzilla.redhat.com/show_bug.cgi?id=1822789
-Patch1:         shiboken-debug-level.patch
-# Patches from 5.14.x backported to 5.13.x
-# https://github.com/conda-forge/pyside2-feedstock/tree/master/recipe
-Patch2:         python-pyside2-py38.patch
+Patch1:         python_ver_classifier.patch
 
-BuildRequires:  cmake gcc graphviz
+%if 0%{?rhel} == 7
+BuildRequires:  cmake3
+BuildRequires:  llvm-toolset-7-clang-devel llvm-toolset-7-llvm-devel
+%else
+BuildRequires:  cmake
+%endif
+BuildRequires:  gcc graphviz
 BuildRequires:  clang-devel llvm-devel
 BuildRequires:  /usr/bin/pathfix.py
 BuildRequires:  libxml2-devel
@@ -38,32 +42,38 @@ BuildRequires:  python3-sphinx
 BuildRequires:  python3-setuptools
 BuildRequires:  python3-wheel
 # Shiboken2
-BuildRequires:  qt5-qtbase-devel >= %{qt5ver}
-BuildRequires:  qt5-qtxmlpatterns-devel  >= %{qt5ver}
-BuildRequires:  qt5-qtwebkit-devel
+BuildRequires:  cmake(Qt5Core) >= %{qt5ver}
+BuildRequires:  cmake(Qt5Gui) >= %{qt5ver}
+BuildRequires:  cmake(Qt5Xml) >= %{qt5ver}
+BuildRequires:  cmake(Qt5Widgets) >= %{qt5ver}
+BuildRequires:  cmake(Qt5WebKit) >= %{qt5ver}
 # Needed for Cmake UI Config
-BuildRequires:  qt5-qttools-static
-BuildRequires:  qt5-qtx11extras-devel
+BuildRequires:  cmake(Qt5UiTools) >= %{qt5ver}
+BuildRequires:  cmake(Qt5X11Extras) >= %{qt5ver}
 # PySide2
 BuildRequires:  qt5-qtbase-private-devel >= %{qt5ver}
-BuildRequires:  qt5-qtcharts-devel >= %{qt5ver}
-BuildRequires:  qt5-qtdatavis3d-devel >= %{qt5ver}
-BuildRequires:  qt5-qtremoteobjects-devel >= %{qt5ver}
-BuildRequires:  qt5-qtscript-devel >= %{qt5ver}
-BuildRequires:  qt5-qtmultimedia-devel >= %{qt5ver}
-BuildRequires:  qt5-qtxmlpatterns-devel >= %{qt5ver}
-BuildRequires:  qt5-qttools-devel >= %{qt5ver}
-BuildRequires:  qt5-qtmultimedia-devel >= %{qt5ver}
-BuildRequires:  qt5-qtscxml-devel >= %{qt5ver}
-BuildRequires:  qt5-qtsensors-devel >= %{qt5ver}
-BuildRequires:  qt5-qtspeech-devel >= %{qt5ver}
-BuildRequires:  qt5-qtsvg-devel >= %{qt5ver}
-%ifnarch ppc64le s390x
-BuildRequires:  qt5-qtwebengine-devel >= %{qt5ver}
+BuildRequires:  cmake(Qt5Charts) >= %{qt5ver}
+%if 0%{?fedora} > 32
+BuildRequires:  cmake(Qt5DataVisualization) >= %{qt5ver}
 %endif
-BuildRequires:  qt5-qtwebsockets-devel >= %{qt5ver}
-BuildRequires:  qt5-qt3d-devel >= %{qt5ver}
-BuildRequires:  qt5-qttools-devel >= %{qt5ver}
+BuildRequires:  cmake(Qt5Multimedia) >= %{qt5ver}
+BuildRequires:  cmake(Qt5QuickControls2) >= %{qt5ver}
+BuildRequires:  cmake(Qt5RemoteObjects) >= %{qt5ver}
+BuildRequires:  cmake(Qt5Script) >= %{qt5ver}
+BuildRequires:  cmake(Qt5Scxml) >= %{qt5ver}
+BuildRequires:  cmake(Qt5Sensors) >= %{qt5ver}
+BuildRequires:  cmake(Qt5SerialPort) >= %{qt5ver}
+BuildRequires:  cmake(Qt5Svg) >= %{qt5ver}
+BuildRequires:  cmake(Qt5TextToSpeech) >= %{qt5ver}
+BuildRequires:  cmake(Qt5XmlPatterns) >= %{qt5ver}
+%ifnarch ppc64le s390x
+BuildRequires:  cmake(Qt5WebEngine) >= %{qt5ver}
+%endif
+BuildRequires:  cmake(Qt5WebSockets) >= %{qt5ver}
+BuildRequires:  cmake(Qt53DCore) >= %{qt5ver}
+BuildRequires:  cmake(Qt5Designer) >= %{qt5ver}
+BuildRequires:  cmake(Qt5Help) >= %{qt5ver}
+BuildRequires:  cmake(Qt5UiPlugin) >= %{qt5ver}
 
 
 %description
@@ -155,19 +165,25 @@ the previous versions (without the 2) refer to Qt 4.
 
 
 %build
-export CXX=/usr/bin/clang++
-mkdir %{_target} && cd %{_target}
-%cmake -DUSE_PYTHON_VERSION=3 ../
-%make_build
 
+%if 0%{?rhel} == 7
+. /opt/rh/devtoolset-7/enable
+. /opt/rh/llvm-toolset-7/enable
+%else
+export CXX=/usr/bin/clang++
+%endif
+mkdir %{_target} && cd %{_target}
+%if 0%{?rhel} == 7
+%cmake3 -DUSE_PYTHON_VERSION=3 ../
+%else
+%cmake -DUSE_PYTHON_VERSION=3 ../
+%endif
+%make_build
 
 %install
 cd %{_target}
 %make_install
 cd -
-
-# Remove v2 files that bytecompile chokes on...
-rm -rf %{buildroot}%{python3_sitearch}/pyside2uic/port_v2
 
 # Generate egg-info manually and install since we're performing a cmake build.
 %{__python3} setup.py egg_info
@@ -183,15 +199,10 @@ done
 # -i specifies the interpreter for the shebang
 # Need to list files that do not match ^[a-zA-Z0-9_]+\.py$ explicitly!
 pathfix.py -pni "%{__python3} %{py3_shbang_opts}" %{buildroot}%{_bindir}/*
-pathfix.py -pni "%{__python3} %{py3_shbang_opts}" %{buildroot}%{_bindir}/pyside2-uic
-
-# icon_cache is not executable and therefore  should not have a shebang
-sed -i '/^#!/d' %{buildroot}%{python3_sitearch}/pyside2uic/icon_cache.py
 
 
 %check
 # Lots of tests fail currently
-# Also, the testing doesn't appear to work with the direct CMake build method.
 #{__python3} testrunner.py test
 
 
@@ -199,7 +210,7 @@ sed -i '/^#!/d' %{buildroot}%{python3_sitearch}/pyside2uic/icon_cache.py
 %license LICENSE.LGPLv3
 %doc README.md
 %doc CHANGES.rst
-%{_libdir}/libpyside2*.so.5.13*
+%{_libdir}/libpyside2*.so.5.15*
 %{python3_sitearch}/%{camel_name}/
 %{python3_sitearch}/%{camel_name}-%{version}-py%{python3_version}.egg-info/
 
@@ -215,19 +226,17 @@ sed -i '/^#!/d' %{buildroot}%{python3_sitearch}/pyside2uic/icon_cache.py
 %license LICENSE.GPL2
 %{_bindir}/pyside*
 %{_mandir}/man1/pyside*.1*
-%{python3_sitearch}/pyside2uic/
 
 %files -n shiboken2
 %doc README.shiboken2-generator.md
 %license LICENSE.GPLv3
 %{_bindir}/shiboken2
 %{_bindir}/shiboken_tool.py
-%{_mandir}/man1/shiboken2.1.*
 
 %files -n python3-shiboken2
 %doc README.shiboken2.md
 %license LICENSE.LGPLv3
-%{_libdir}/libshiboken2*.so.5.13*
+%{_libdir}/libshiboken2*.so.5.15*
 %{python3_sitearch}/shiboken2/
 %{python3_sitearch}/shiboken2-%{version}-py%{python3_version}.egg-info/
 
@@ -242,8 +251,22 @@ sed -i '/^#!/d' %{buildroot}%{python3_sitearch}/pyside2uic/icon_cache.py
 
 
 %changelog
-* Mon May 18 2020 Richard Shaw <hobbes1069@gmail.com> - 1:5.13.2-4
-- Add patch backporting Python 3.8 support from 5.14.x.
+* Thu Jun 18 2020 Marie Loise Nolden <loise@kde.org> - 1:5.15.0-1
+- Update to 5.15.0.
+- Convert Qt BRs to cmake(Qt5...) variant.
+- Include new supported Qt5 modules.
+
+* Wed May 27 2020 Richard Shaw <hobbes1069@gmail.com> - 1:5.14.2.2-1
+- Update to 5.14.2.2.
+
+* Tue May 26 2020 Miro Hrončok <mhroncok@redhat.com> - 1:5.14.2.1-2
+- Rebuilt for Python 3.9
+
+* Fri Apr 24 2020 Richard Shaw <hobbes1069@gmail.com> - 1:5.14.2.1-1
+- Update to 5.14.2.1.
+
+* Fri Apr 10 2020 Richard Shaw <hobbes1069@gmail.com> - 1:5.14.2-1
+- Update to 5.14.2.
 
 * Thu Apr  09 2020 Morian Sonnet <MorianSonnet@googlemail.com> - 1:5.13.2-3
 - Fix ignored --debug-level issue
