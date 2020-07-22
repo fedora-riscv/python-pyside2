@@ -53,7 +53,9 @@ BuildRequires:  cmake(Qt5X11Extras) >= %{qt5ver}
 # PySide2
 BuildRequires:  qt5-qtbase-private-devel >= %{qt5ver}
 BuildRequires:  cmake(Qt5Charts) >= %{qt5ver}
+%if 0%{?fedora} > 32
 BuildRequires:  cmake(Qt5DataVisualization) >= %{qt5ver}
+%endif
 BuildRequires:  cmake(Qt5Multimedia) >= %{qt5ver}
 BuildRequires:  cmake(Qt5QuickControls2) >= %{qt5ver}
 BuildRequires:  cmake(Qt5RemoteObjects) >= %{qt5ver}
