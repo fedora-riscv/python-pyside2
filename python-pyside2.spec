@@ -13,7 +13,7 @@
 Name:           python-%{pypi_name}
 Epoch:          1
 Version:        5.15.0
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Python bindings for the Qt 5 cross-platform application and UI framework
 
 License:        BSD and GPLv2 and GPLv3 and LGPLv3
@@ -251,6 +251,9 @@ pathfix.py -pni "%{__python3} %{py3_shbang_opts}" %{buildroot}%{_bindir}/*
 
 
 %changelog
+* Wed Jul 29 2020 Fedora Release Engineering <releng@fedoraproject.org> - 1:5.15.0-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_33_Mass_Rebuild
+
 * Thu Jun 18 2020 Marie Loise Nolden <loise@kde.org> - 1:5.15.0-1
 - Update to 5.15.0.
 - Convert Qt BRs to cmake(Qt5...) variant.
