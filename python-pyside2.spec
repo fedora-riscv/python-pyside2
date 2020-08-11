@@ -172,18 +172,16 @@ the previous versions (without the 2) refer to Qt 4.
 %else
 export CXX=/usr/bin/clang++
 %endif
-mkdir %{_target} && cd %{_target}
 %if 0%{?rhel} == 7
+mkdir %{_target} && cd %{_target}
 %cmake3 -DUSE_PYTHON_VERSION=3 ../
 %else
-%cmake -DUSE_PYTHON_VERSION=3 ../
+%cmake -DUSE_PYTHON_VERSION=3
 %endif
-%make_build
+%cmake_build
 
 %install
-cd %{_target}
-%make_install
-cd -
+%cmake_install
 
 # Generate egg-info manually and install since we're performing a cmake build.
 %{__python3} setup.py egg_info
