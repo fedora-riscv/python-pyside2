@@ -254,6 +254,9 @@ pathfix.py -pni "%{__python3} %{py3_shbang_opts}" %{buildroot}%{_bindir}/*
 * Sat Sep 12 2020 Richard Shaw <hobbes1069@gmail.com> - 1:5.15.0-4
 - Rebuild for Qt 5.15.
 
+* Fri Sep 11 2020 Jan Grulich <jgrulich@redhat.com> - 1:5.15.0-4
+- rebuild (qt5)
+
 * Sat Aug 01 2020 Fedora Release Engineering <releng@fedoraproject.org> - 1:5.15.0-3
 - Second attempt - Rebuilt for
   https://fedoraproject.org/wiki/Fedora_33_Mass_Rebuild
