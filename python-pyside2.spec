@@ -1,3 +1,5 @@
+%global _lto_cflags %{nil}
+
 %global pypi_name pyside2
 %global camel_name PySide2
 %global qt5ver 5.14
@@ -13,7 +15,7 @@
 Name:           python-%{pypi_name}
 Epoch:          1
 Version:        5.15.0
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        Python bindings for the Qt 5 cross-platform application and UI framework
 
 License:        BSD and GPLv2 and GPLv3 and LGPLv3
@@ -249,6 +251,9 @@ pathfix.py -pni "%{__python3} %{py3_shbang_opts}" %{buildroot}%{_bindir}/*
 
 
 %changelog
+* Sat Sep 12 2020 Richard Shaw <hobbes1069@gmail.com> - 1:5.15.0-4
+- Rebuild for Qt 5.15.
+
 * Sat Aug 01 2020 Fedora Release Engineering <releng@fedoraproject.org> - 1:5.15.0-3
 - Second attempt - Rebuilt for
   https://fedoraproject.org/wiki/Fedora_33_Mass_Rebuild
