@@ -14,8 +14,8 @@
 
 Name:           python-%{pypi_name}
 Epoch:          1
-Version:        5.15.0
-Release:        4%{?dist}
+Version:        5.15.1
+Release:        1%{?dist}
 Summary:        Python bindings for the Qt 5 cross-platform application and UI framework
 
 License:        BSD and GPLv2 and GPLv3 and LGPLv3
@@ -26,14 +26,12 @@ Source0:        https://download.qt.io/official_releases/QtForPython/%{pypi_name
 # PySide2 tools are "reinstalled" for pip installs but breaks distro builds.
 Patch0:         pyside2-tools-obsolete.patch
 # Don't abort the build on Python 3.8/3.9
-Patch1:         python_ver_classifier.patch
+#Patch1:         python_ver_classifier.patch
 
 %if 0%{?rhel} == 7
-BuildRequires:  cmake3
 BuildRequires:  llvm-toolset-7-clang-devel llvm-toolset-7-llvm-devel
-%else
-BuildRequires:  cmake
 %endif
+BuildRequires:  cmake%{?rhel:3}
 BuildRequires:  gcc graphviz
 BuildRequires:  clang-devel llvm-devel
 BuildRequires:  /usr/bin/pathfix.py
@@ -167,6 +165,10 @@ the previous versions (without the 2) refer to Qt 4.
 
 
 %build
+# Use cmake3 on EL
+%if 0%{?rhel}
+%global cmake %cmake3
+%endif
 
 %if 0%{?rhel} == 7
 . /opt/rh/devtoolset-7/enable
@@ -174,13 +176,16 @@ the previous versions (without the 2) refer to Qt 4.
 %else
 export CXX=/usr/bin/clang++
 %endif
-%if 0%{?rhel} == 7
+
+%if 0%{?rhel} || 0%{?fedora} < 33
 mkdir %{_target} && cd %{_target}
-%cmake3 -DUSE_PYTHON_VERSION=3 ../
+%cmake -DUSE_PYTHON_VERSION=3 ../
 %else
 %cmake -DUSE_PYTHON_VERSION=3
 %endif
+
 %cmake_build
+
 
 %install
 %cmake_install
@@ -209,7 +214,6 @@ pathfix.py -pni "%{__python3} %{py3_shbang_opts}" %{buildroot}%{_bindir}/*
 %files -n python3-%{pypi_name}
 %license LICENSE.LGPLv3
 %doc README.md
-%doc CHANGES.rst
 %{_libdir}/libpyside2*.so.5.15*
 %{python3_sitearch}/%{camel_name}/
 %{python3_sitearch}/%{camel_name}-%{version}-py%{python3_version}.egg-info/
@@ -251,6 +255,10 @@ pathfix.py -pni "%{__python3} %{py3_shbang_opts}" %{buildroot}%{_bindir}/*
 
 
 %changelog
+* Thu Nov 05 2020 Richard Shaw <hobbes1069@gmail.com> - 1:5.15.1-1
+- Update to 5.15.1.
+- Update conditionals to support older Fedora and EPEL 8.
+
 * Sat Sep 12 2020 Richard Shaw <hobbes1069@gmail.com> - 1:5.15.0-4
 - Rebuild for Qt 5.15.
 
