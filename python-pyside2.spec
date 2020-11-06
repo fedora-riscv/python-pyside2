@@ -188,6 +188,10 @@ mkdir %{_target} && cd %{_target}
 
 
 %install
+%if 0%{?rhel} || 0%{?fedora} < 33
+cd %{_target}
+%endif
+
 %cmake_install
 
 # Generate egg-info manually and install since we're performing a cmake build.
