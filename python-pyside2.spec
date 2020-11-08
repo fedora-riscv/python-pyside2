@@ -189,11 +189,12 @@ mkdir %{_target} && cd %{_target}
 
 %install
 %if 0%{?rhel} || 0%{?fedora} < 33
-cd %{_target}
+pushd %{_target}
 %endif
 
 %cmake_install
 
+popd
 # Generate egg-info manually and install since we're performing a cmake build.
 %{__python3} setup.py egg_info
 for name in PySide2 shiboken2 shiboken2_generator; do
