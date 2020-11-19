@@ -26,7 +26,7 @@ Source0:        https://download.qt.io/official_releases/QtForPython/%{pypi_name
 # PySide2 tools are "reinstalled" for pip installs but breaks distro builds.
 Patch0:         pyside2-tools-obsolete.patch
 # Don't abort the build on Python 3.8/3.9
-#Patch1:         python_ver_classifier.patch
+Patch1:         python_ver_classifier.patch
 
 %if 0%{?rhel} == 7
 BuildRequires:  llvm-toolset-7-clang-devel llvm-toolset-7-llvm-devel
@@ -189,12 +189,13 @@ mkdir %{_target} && cd %{_target}
 
 %install
 %if 0%{?rhel} || 0%{?fedora} < 33
-pushd %{_target}
+    pushd %{_target}
+    %cmake_install
+    popd
+%else
+    %cmake_install
 %endif
 
-%cmake_install
-
-popd
 # Generate egg-info manually and install since we're performing a cmake build.
 %{__python3} setup.py egg_info
 for name in PySide2 shiboken2 shiboken2_generator; do
