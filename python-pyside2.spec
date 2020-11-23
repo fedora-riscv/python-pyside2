@@ -15,7 +15,7 @@
 Name:           python-%{pypi_name}
 Epoch:          1
 Version:        5.15.1
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Python bindings for the Qt 5 cross-platform application and UI framework
 
 License:        BSD and GPLv2 and GPLv3 and LGPLv3
@@ -261,6 +261,9 @@ pathfix.py -pni "%{__python3} %{py3_shbang_opts}" %{buildroot}%{_bindir}/*
 
 
 %changelog
+* Mon Nov 23 07:54:22 CET 2020 Jan Grulich <jgrulich@redhat.com> - 1:5.15.1-2
+- rebuild (qt5)
+
 * Thu Nov 05 2020 Richard Shaw <hobbes1069@gmail.com> - 1:5.15.1-1
 - Update to 5.15.1.
 - Update conditionals to support older Fedora and EPEL 8.
