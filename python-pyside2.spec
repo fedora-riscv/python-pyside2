@@ -14,7 +14,7 @@
 
 Name:           python-%{pypi_name}
 Epoch:          1
-Version:        5.15.1
+Version:        5.15.2
 Release:        1%{?dist}
 Summary:        Python bindings for the Qt 5 cross-platform application and UI framework
 
@@ -27,6 +27,8 @@ Source0:        https://download.qt.io/official_releases/QtForPython/%{pypi_name
 Patch0:         pyside2-tools-obsolete.patch
 # Don't abort the build on Python 3.8/3.9
 Patch1:         python_ver_classifier.patch
+# setuptools --reuse-build option was broken in 5.15.2
+Patch2:         python-pyside2-options_py.patch
 
 %if 0%{?rhel} == 7
 BuildRequires:  llvm-toolset-7-clang-devel llvm-toolset-7-llvm-devel
@@ -189,14 +191,20 @@ mkdir %{_target} && cd %{_target}
 
 %install
 %if 0%{?rhel} || 0%{?fedora} < 33
-    pushd %{_target}
+    pushd %{_host}
     %cmake_install
     popd
 %else
     %cmake_install
 %endif
 
+#
 # Generate egg-info manually and install since we're performing a cmake build.
+#
+# Copy CMake configuration files from the BINARY dir back to the SOURCE dir so
+# setuptools can find them.
+cp %{_host}/sources/shiboken2/shibokenmodule/{*.py,*.txt} sources/shiboken2/shibokenmodule/
+cp %{_host}/sources/pyside2/PySide2/*.py sources/pyside2/PySide2/
 %{__python3} setup.py egg_info
 for name in PySide2 shiboken2 shiboken2_generator; do
   mkdir -p %{buildroot}%{python3_sitearch}/$name-%{version}-py%{python3_version}.egg-info
@@ -261,6 +269,9 @@ pathfix.py -pni "%{__python3} %{py3_shbang_opts}" %{buildroot}%{_bindir}/*
 
 
 %changelog
+* Mon Nov 23 2020 Richard Shaw <hobbes1069@gmail.com> - 1:5.15.2-1
+- Update to 5.15.2.
+
 * Thu Nov 05 2020 Richard Shaw <hobbes1069@gmail.com> - 1:5.15.1-1
 - Update to 5.15.1.
 - Update conditionals to support older Fedora and EPEL 8.
