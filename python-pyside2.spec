@@ -191,7 +191,7 @@ mkdir %{_target} && cd %{_target}
 
 %install
 %if 0%{?rhel} || 0%{?fedora} < 33
-    pushd %{_host}
+    pushd %{__cmake_builddir}
     %cmake_install
     popd
 %else
@@ -203,8 +203,8 @@ mkdir %{_target} && cd %{_target}
 #
 # Copy CMake configuration files from the BINARY dir back to the SOURCE dir so
 # setuptools can find them.
-cp %{_host}/sources/shiboken2/shibokenmodule/{*.py,*.txt} sources/shiboken2/shibokenmodule/
-cp %{_host}/sources/pyside2/PySide2/*.py sources/pyside2/PySide2/
+cp %{__cmake_builddir}/sources/shiboken2/shibokenmodule/{*.py,*.txt} sources/shiboken2/shibokenmodule/
+cp %{__cmake_builddir}/sources/pyside2/PySide2/*.py sources/pyside2/PySide2/
 %{__python3} setup.py egg_info
 for name in PySide2 shiboken2 shiboken2_generator; do
   mkdir -p %{buildroot}%{python3_sitearch}/$name-%{version}-py%{python3_version}.egg-info
