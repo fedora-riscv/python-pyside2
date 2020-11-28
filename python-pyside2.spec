@@ -269,8 +269,11 @@ pathfix.py -pni "%{__python3} %{py3_shbang_opts}" %{buildroot}%{_bindir}/*
 
 
 %changelog
-* Mon Nov 23 2020 Richard Shaw <hobbes1069@gmail.com> - 1:5.15.2-1
+* Sat Nov 28 2020 Richard Shaw <hobbes1069@gmail.com> - 1:5.15.2-1
 - Update to 5.15.2.
+
+* Mon Nov 23 07:54:22 CET 2020 Jan Grulich <jgrulich@redhat.com> - 1:5.15.1-2
+- rebuild (qt5)
 
 * Thu Nov 05 2020 Richard Shaw <hobbes1069@gmail.com> - 1:5.15.1-1
 - Update to 5.15.1.
