@@ -1,4 +1,5 @@
 %global _lto_cflags %{nil}
+%undefine __cmake_in_source_build
 
 %global pypi_name pyside2
 %global camel_name PySide2
@@ -32,8 +33,9 @@ Patch2:         python-pyside2-options_py.patch
 
 %if 0%{?rhel} == 7
 BuildRequires:  llvm-toolset-7-clang-devel llvm-toolset-7-llvm-devel
+BuildRequires:  cmake3
 %endif
-BuildRequires:  cmake%{?rhel:3}
+BuildRequires:  cmake
 BuildRequires:  gcc graphviz
 BuildRequires:  clang-devel llvm-devel
 BuildRequires:  /usr/bin/pathfix.py
@@ -179,24 +181,24 @@ the previous versions (without the 2) refer to Qt 4.
 export CXX=/usr/bin/clang++
 %endif
 
-%if 0%{?rhel} || 0%{?fedora} < 33
-mkdir %{_target} && cd %{_target}
-%cmake -DUSE_PYTHON_VERSION=3 ../
-%else
+#if 0%{?rhel} || 0%{?fedora} < 33
+#mkdir %{_target} && cd %{_target}
+#cmake -DUSE_PYTHON_VERSION=3 ../
+#else
 %cmake -DUSE_PYTHON_VERSION=3
-%endif
+#endif
 
 %cmake_build
 
 
 %install
-%if 0%{?rhel} || 0%{?fedora} < 33
-    pushd %{__cmake_builddir}
+#if 0%{?rhel} || 0%{?fedora} < 33
+#    pushd %{__cmake_builddir}
+#    cmake_install
+#    popd
+#else
     %cmake_install
-    popd
-%else
-    %cmake_install
-%endif
+#endif
 
 #
 # Generate egg-info manually and install since we're performing a cmake build.
