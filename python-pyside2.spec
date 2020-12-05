@@ -1,4 +1,5 @@
 %global _lto_cflags %{nil}
+%undefine __cmake_in_source_build
 
 %global pypi_name pyside2
 %global camel_name PySide2
@@ -14,8 +15,8 @@
 
 Name:           python-%{pypi_name}
 Epoch:          1
-Version:        5.15.1
-Release:        1%{?dist}.1
+Version:        5.15.2
+Release:        1%{?dist}
 Summary:        Python bindings for the Qt 5 cross-platform application and UI framework
 
 License:        BSD and GPLv2 and GPLv3 and LGPLv3
@@ -26,12 +27,15 @@ Source0:        https://download.qt.io/official_releases/QtForPython/%{pypi_name
 # PySide2 tools are "reinstalled" for pip installs but breaks distro builds.
 Patch0:         pyside2-tools-obsolete.patch
 # Don't abort the build on Python 3.8/3.9
-#Patch1:         python_ver_classifier.patch
+Patch1:         python_ver_classifier.patch
+# setuptools --reuse-build option was broken in 5.15.2
+Patch2:         python-pyside2-options_py.patch
 
 %if 0%{?rhel} == 7
 BuildRequires:  llvm-toolset-7-clang-devel llvm-toolset-7-llvm-devel
+BuildRequires:  cmake3
 %endif
-BuildRequires:  cmake%{?rhel:3}
+BuildRequires:  cmake
 BuildRequires:  gcc graphviz
 BuildRequires:  clang-devel llvm-devel
 BuildRequires:  /usr/bin/pathfix.py
@@ -177,20 +181,32 @@ the previous versions (without the 2) refer to Qt 4.
 export CXX=/usr/bin/clang++
 %endif
 
-%if 0%{?rhel} || 0%{?fedora} < 33
-mkdir %{_target} && cd %{_target}
-%cmake -DUSE_PYTHON_VERSION=3 ../
-%else
+#if 0%{?rhel} || 0%{?fedora} < 33
+#mkdir %{_target} && cd %{_target}
+#cmake -DUSE_PYTHON_VERSION=3 ../
+#else
 %cmake -DUSE_PYTHON_VERSION=3
-%endif
+#endif
 
 %cmake_build
 
 
 %install
-%cmake_install
+#if 0%{?rhel} || 0%{?fedora} < 33
+#    pushd %{__cmake_builddir}
+#    cmake_install
+#    popd
+#else
+    %cmake_install
+#endif
 
+#
 # Generate egg-info manually and install since we're performing a cmake build.
+#
+# Copy CMake configuration files from the BINARY dir back to the SOURCE dir so
+# setuptools can find them.
+cp %{__cmake_builddir}/sources/shiboken2/shibokenmodule/{*.py,*.txt} sources/shiboken2/shibokenmodule/
+cp %{__cmake_builddir}/sources/pyside2/PySide2/*.py sources/pyside2/PySide2/
 %{__python3} setup.py egg_info
 for name in PySide2 shiboken2 shiboken2_generator; do
   mkdir -p %{buildroot}%{python3_sitearch}/$name-%{version}-py%{python3_version}.egg-info
@@ -255,8 +271,14 @@ pathfix.py -pni "%{__python3} %{py3_shbang_opts}" %{buildroot}%{_bindir}/*
 
 
 %changelog
+* Sat Nov 28 2020 Richard Shaw <hobbes1069@gmail.com> - 1:5.15.2-1
+- Update to 5.15.2.
+
 * Sat Nov 28 2020 Rex Dieter <rdieter@fedoraproject.org> - 1:5.15.1-1.1
 - f33 branch rebuild (qt5)
+
+* Mon Nov 23 07:54:22 CET 2020 Jan Grulich <jgrulich@redhat.com> - 1:5.15.1-2
+- rebuild (qt5)
 
 * Thu Nov 05 2020 Richard Shaw <hobbes1069@gmail.com> - 1:5.15.1-1
 - Update to 5.15.1.
