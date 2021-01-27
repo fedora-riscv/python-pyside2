@@ -16,7 +16,7 @@
 Name:           python-%{pypi_name}
 Epoch:          1
 Version:        5.15.2
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Python bindings for the Qt 5 cross-platform application and UI framework
 
 License:        BSD and GPLv2 and GPLv3 and LGPLv3
@@ -271,6 +271,9 @@ pathfix.py -pni "%{__python3} %{py3_shbang_opts}" %{buildroot}%{_bindir}/*
 
 
 %changelog
+* Wed Jan 27 2021 Fedora Release Engineering <releng@fedoraproject.org> - 1:5.15.2-3
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_34_Mass_Rebuild
+
 * Fri Jan 22 2021 Tom Stellard <tstellar@redhat.com> - 1:5.15.2-2
 - Rebuild for clang-11.1.0
 
