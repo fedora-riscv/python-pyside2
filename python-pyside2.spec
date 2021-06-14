@@ -31,6 +31,11 @@ Patch1:         python_ver_classifier.patch
 # setuptools --reuse-build option was broken in 5.15.2
 Patch2:         python-pyside2-options_py.patch
 
+# A (possibly incomplete) patch with Python 3.10 compatibility
+# Backported from https://codereview.qt-project.org/c/pyside/pyside-setup/+/348390
+# Inlined _Py_Mangle from CPython sources
+Patch3:         python3.10.patch
+
 %if 0%{?rhel} == 7
 BuildRequires:  llvm-toolset-7-clang-devel llvm-toolset-7-llvm-devel
 BuildRequires:  cmake3
