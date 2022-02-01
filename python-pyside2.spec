@@ -231,8 +231,8 @@ pathfix.py -pni "%{__python3} %{py3_shbang_opts}" %{buildroot}%{_bindir}/*
 # Lots of tests fail currently
 #{__python3} testrunner.py test
 # Do basic import test instead
-#%py3_check_import PySide2
-#%py3_check_import shiboken2
+#py3_check_import PySide2
+#py3_check_import shiboken2
 
 
 %files -n python3-%{pypi_name}
