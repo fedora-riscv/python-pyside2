@@ -1,7 +1,7 @@
-diff --git a/sources/pyside2/tests/QtCore/qenum_test.py b/sources/pyside2/tests/QtCore/qenum_test.py
-index f99a893..45e8efa 100644
---- a/sources/pyside2/tests/QtCore/qenum_test.py
-+++ b/sources/pyside2/tests/QtCore/qenum_test.py
+Index: pyside-setup-opensource-src-5.15.2/sources/pyside2/tests/QtCore/qenum_test.py
+===================================================================
+--- pyside-setup-opensource-src-5.15.2.orig/sources/pyside2/tests/QtCore/qenum_test.py
++++ pyside-setup-opensource-src-5.15.2/sources/pyside2/tests/QtCore/qenum_test.py
 @@ -195,16 +195,18 @@ class SomeClass(QObject):
      QEnum(SomeEnum)     # works even without the decorator assignment
  
@@ -23,10 +23,10 @@ index f99a893..45e8efa 100644
          self.assertEqual(len(SomeClass.SomeEnum.__members__), 3)
          with self.assertRaises(TypeError):
              int(SomeClass.SomeEnum.C) == 6
-diff --git a/sources/shiboken2/libshiboken/pep384impl.cpp b/sources/shiboken2/libshiboken/pep384impl.cpp
-index cb80425..c4e7301 100644
---- a/sources/shiboken2/libshiboken/pep384impl.cpp
-+++ b/sources/shiboken2/libshiboken/pep384impl.cpp
+Index: pyside-setup-opensource-src-5.15.2/sources/shiboken2/libshiboken/pep384impl.cpp
+===================================================================
+--- pyside-setup-opensource-src-5.15.2.orig/sources/shiboken2/libshiboken/pep384impl.cpp
++++ pyside-setup-opensource-src-5.15.2/sources/shiboken2/libshiboken/pep384impl.cpp
 @@ -707,6 +707,76 @@ PyObject *PepMapping_Items(PyObject *o)
   *
   */
@@ -104,13 +104,31 @@ index cb80425..c4e7301 100644
  #ifdef Py_LIMITED_API
  // We keep these definitions local, because they don't work in Python 2.
  # define PyUnicode_GET_LENGTH(op)    PyUnicode_GetLength((PyObject *)(op))
-diff --git a/sources/shiboken2/libshiboken/pep384impl.h b/sources/shiboken2/libshiboken/pep384impl.h
-index 7a6f57f..eb65596 100644
---- a/sources/shiboken2/libshiboken/pep384impl.h
-+++ b/sources/shiboken2/libshiboken/pep384impl.h
-@@ -40,6 +40,11 @@
- #ifndef PEP384IMPL_H
- #define PEP384IMPL_H
+@@ -751,9 +821,6 @@ _Pep_PrivateMangle(PyObject *self, PyObj
+ #endif // IS_PY2
+     Shiboken::AutoDecRef privateobj(PyObject_GetAttr(
+         reinterpret_cast<PyObject *>(Py_TYPE(self)), Shiboken::PyMagicName::name()));
+-#ifndef Py_LIMITED_API
+-    return _Py_Mangle(privateobj, name);
+-#else
+     // PYSIDE-1436: _Py_Mangle is no longer exposed; implement it always.
+     // The rest of this function is our own implementation of _Py_Mangle.
+     // Please compare the original function in compile.c .
+@@ -789,7 +856,6 @@ _Pep_PrivateMangle(PyObject *self, PyObj
+     if (amount > big_stack)
+         free(resbuf);
+     return result;
+-#endif // else Py_LIMITED_API
+ }
+ 
+ /*****************************************************************************
+Index: pyside-setup-opensource-src-5.15.2/sources/shiboken2/libshiboken/pep384impl.h
+===================================================================
+--- pyside-setup-opensource-src-5.15.2.orig/sources/shiboken2/libshiboken/pep384impl.h
++++ pyside-setup-opensource-src-5.15.2/sources/shiboken2/libshiboken/pep384impl.h
+@@ -45,6 +45,11 @@
+ #  define Py_SET_REFCNT(obj, refcnt) ((Py_REFCNT(obj) = (refcnt)), (void)0)
+ #endif
  
 +// PYSIDE-1436: Adapt to Python 3.10
 +#if PY_VERSION_HEX < 0x030900A4
@@ -120,62 +138,3 @@ index 7a6f57f..eb65596 100644
  extern "C"
  {
  
-@@ -327,7 +332,7 @@ LIBSHIBOKEN_API PyObject *PyRun_String(const char *, int, PyObject *, PyObject *
- // But this is no problem as we check it's validity for every version.
- 
- #define PYTHON_BUFFER_VERSION_COMPATIBLE    (PY_VERSION_HEX >= 0x03030000 && \
--                                             PY_VERSION_HEX <  0x0309FFFF)
-+                                             PY_VERSION_HEX <  0x030AFFFF)
- #if !PYTHON_BUFFER_VERSION_COMPATIBLE
- # error Please check the buffer compatibility for this python version!
- #endif
-diff --git a/sources/shiboken2/libshiboken/sbkstring.cpp b/sources/shiboken2/libshiboken/sbkstring.cpp
-index 918aae7..2ac3f5c 100644
---- a/sources/shiboken2/libshiboken/sbkstring.cpp
-+++ b/sources/shiboken2/libshiboken/sbkstring.cpp
-@@ -233,6 +233,8 @@ Py_ssize_t len(PyObject *str)
- //     PyObject *attr = PyObject_GetAttr(obj, name());
- //
- 
-+#if PY_VERSION_HEX < 0x030A0000
-+
- using StaticStrings = std::unordered_set<PyObject *>;
- 
- static void finalizeStaticStrings();    // forward
-@@ -247,19 +249,23 @@ static void finalizeStaticStrings()
- {
-     auto &set = staticStrings();
-     for (PyObject *ob : set) {
--        Py_REFCNT(ob) = 1;
-+        Py_SET_REFCNT(ob, 1);
-         Py_DECREF(ob);
-     }
-     set.clear();
- }
- 
-+#endif // PY_VERSION_HEX < 0x030A0000
-+
- PyObject *createStaticString(const char *str)
- {
-+#if PY_VERSION_HEX < 0x030A0000
-     static bool initialized = false;
-     if (!initialized) {
-         Py_AtExit(finalizeStaticStrings);
-         initialized = true;
-     }
-+#endif // PY_VERSION_HEX < 0x030A0000
- #if PY_VERSION_HEX >= 0x03000000
-     PyObject *result = PyUnicode_InternFromString(str);
- #else
-@@ -270,9 +276,11 @@ PyObject *createStaticString(const char *str)
-         PyErr_Print();
-         Py_FatalError("unexpected error in createStaticString()");
-     }
-+#if PY_VERSION_HEX < 0x030A0000
-     auto it = staticStrings().find(result);
-     if (it == staticStrings().end())
-         staticStrings().insert(result);
-+#endif // PY_VERSION_HEX < 0x030A0000
-     /*
-      * Note: We always add one reference even if we have a new string.
-      *       This makes the strings immortal, and we are safe if someone

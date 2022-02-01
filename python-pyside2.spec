@@ -15,8 +15,8 @@
 
 Name:           python-%{pypi_name}
 Epoch:          1
-Version:        5.15.2
-Release:        6%{?dist}
+Version:        5.15.2.1
+Release:        1%{?dist}
 Summary:        Python bindings for the Qt 5 cross-platform application and UI framework
 
 License:        BSD and GPLv2 and GPLv3 and LGPLv3
@@ -27,7 +27,7 @@ Source0:        https://download.qt.io/official_releases/QtForPython/%{pypi_name
 # PySide2 tools are "reinstalled" for pip installs but breaks distro builds.
 Patch0:         pyside2-tools-obsolete.patch
 # Don't abort the build on Python 3.8/3.9
-Patch1:         python_ver_classifier.patch
+#Patch1:         python_ver_classifier.patch
 # setuptools --reuse-build option was broken in 5.15.2
 Patch2:         python-pyside2-options_py.patch
 
@@ -170,7 +170,7 @@ the previous versions (without the 2) refer to Qt 4.
 
 
 %prep
-%autosetup -p1 -n pyside-setup-opensource-src-%{version}
+%autosetup -p1 -n pyside-setup-opensource-src-5.15.2
 
 
 %build
@@ -230,6 +230,9 @@ pathfix.py -pni "%{__python3} %{py3_shbang_opts}" %{buildroot}%{_bindir}/*
 %check
 # Lots of tests fail currently
 #{__python3} testrunner.py test
+# Do basic import test instead
+#%py3_check_import PySide2
+#%py3_check_import shiboken2
 
 
 %files -n python3-%{pypi_name}
@@ -276,6 +279,9 @@ pathfix.py -pni "%{__python3} %{py3_shbang_opts}" %{buildroot}%{_bindir}/*
 
 
 %changelog
+* Mon Jan 31 2022 Richard Shaw <hobbes1069@gmail.com> - 1:5.15.2.1-1
+- Update to 5.15.2.1, fixes BZ#1990768.
+
 * Fri Jan 21 2022 Fedora Release Engineering <releng@fedoraproject.org> - 1:5.15.2-6
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_36_Mass_Rebuild
 
