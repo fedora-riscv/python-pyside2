@@ -1,17 +1,10 @@
+%global toolchain clang
 %global _lto_cflags %{nil}
 %undefine __cmake_in_source_build
 
 %global pypi_name pyside2
 %global camel_name PySide2
 %global qt5ver 5.14
-
-# Clang doesn't handle some gcc specific flags.
-%global _optflags %optflags
-%global optflags %(echo %optflags | sed 's| -fstack-clash-protection||')
-%global optflags %(echo %optflags | sed 's| -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1||')
-%global optflags %(echo %optflags | sed 's| -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1||')
-%global _hardening_ldflags %(echo %_hardening_ldflags | sed 's| -specs=/usr/lib/rpm/redhat/redhat-hardened-ld||')
-
 
 Name:           python-%{pypi_name}
 Epoch:          1
