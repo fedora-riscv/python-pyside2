@@ -9,7 +9,7 @@
 Name:           python-%{pypi_name}
 Epoch:          1
 Version:        5.15.2.1
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Python bindings for the Qt 5 cross-platform application and UI framework
 
 License:        BSD and GPLv2 and GPLv3 and LGPLv3
@@ -28,6 +28,8 @@ Patch2:         python-pyside2-options_py.patch
 # Backported from https://codereview.qt-project.org/c/pyside/pyside-setup/+/348390
 # Inlined _Py_Mangle from CPython sources
 Patch3:         python3.10.patch
+# Work around clang assumptions on header types, .h==c, not c++.
+Patch4:         https://raw.githubusercontent.com/NixOS/nixpkgs/master/pkgs/development/python-modules/shiboken2/nix_compile_cflags.patch
 
 %if 0%{?rhel} == 7
 BuildRequires:  llvm-toolset-7-clang-devel llvm-toolset-7-llvm-devel
@@ -272,6 +274,9 @@ pathfix.py -pni "%{__python3} %{py3_shbang_opts}" %{buildroot}%{_bindir}/*
 
 
 %changelog
+* Wed Feb 02 2022 Richard Shaw <hobbes1069@gmail.com> - 1:5.15.2.1-2
+- Add patch to deal with clang issue with headers.
+
 * Mon Jan 31 2022 Richard Shaw <hobbes1069@gmail.com> - 1:5.15.2.1-1
 - Update to 5.15.2.1, fixes BZ#1990768.
 
