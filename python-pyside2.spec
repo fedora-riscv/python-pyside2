@@ -9,7 +9,7 @@
 Name:           python-%{pypi_name}
 Epoch:          1
 Version:        5.15.2.1
-Release:        4%{?dist}
+Release:        5%{?dist}
 Summary:        Python bindings for the Qt 5 cross-platform application and UI framework
 
 License:        BSD and GPLv2 and GPLv3 and LGPLv3
@@ -274,6 +274,9 @@ pathfix.py -pni "%{__python3} %{py3_shbang_opts}" %{buildroot}%{_bindir}/*
 
 
 %changelog
+* Mon Jun 13 2022 Python Maint <python-maint@redhat.com> - 1:5.15.2.1-5
+- Rebuilt for Python 3.11
+
 * Tue May 17 2022 Jan Grulich <jgrulich@redhat.com> - 1:5.15.2.1-4
 - Rebuild (qt5)
 
