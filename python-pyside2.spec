@@ -31,6 +31,11 @@ Patch3:         python3.10.patch
 # Work around clang assumptions on header types, .h==c, not c++.
 Patch4:         https://raw.githubusercontent.com/NixOS/nixpkgs/master/pkgs/development/python-modules/shiboken2/nix_compile_cflags.patch
 
+# Python 3.11
+# https://code.qt.io/cgit/pyside/pyside-setup.git/patch/?id=52df3b8f64
+# https://code.qt.io/cgit/pyside/pyside-setup.git/patch/?id=73adefe22f (different, but same purpose)
+Patch5:         python3.11.patch
+
 %if 0%{?rhel} == 7
 BuildRequires:  llvm-toolset-7-clang-devel llvm-toolset-7-llvm-devel
 BuildRequires:  cmake3
