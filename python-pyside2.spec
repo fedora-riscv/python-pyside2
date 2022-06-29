@@ -6,6 +6,9 @@
 %global camel_name PySide2
 %global qt5ver 5.14
 
+# Pass `--without tests` to rpmbuild or mock to skip the test suite
+%bcond_without tests
+
 Name:           python-%{pypi_name}
 Epoch:          1
 Version:        5.15.2.1
@@ -41,6 +44,10 @@ Patch4:         https://raw.githubusercontent.com/NixOS/nixpkgs/master/pkgs/deve
 # - Add Python 3.11 to the list of supported versions
 #   (not sent upstream)
 Patch5:         python3.11.patch
+
+# Enable tests in the CMake build
+# This also adds known test failures to blacklist.txt
+Patch:          build-tests.patch
 
 %if 0%{?rhel} == 7
 BuildRequires:  llvm-toolset-7-clang-devel llvm-toolset-7-llvm-devel
@@ -89,6 +96,11 @@ BuildRequires:  cmake(Qt53DCore) >= %{qt5ver}
 BuildRequires:  cmake(Qt5Designer) >= %{qt5ver}
 BuildRequires:  cmake(Qt5Help) >= %{qt5ver}
 BuildRequires:  cmake(Qt5UiPlugin) >= %{qt5ver}
+
+%if %{with tests}
+# Tests use a fake graphical environment
+BuildRequires:  /usr/bin/xvfb-run
+%endif
 
 
 %description
@@ -196,8 +208,14 @@ export CXX=$(which clang++)
 #mkdir %{_target} && cd %{_target}
 #cmake -DUSE_PYTHON_VERSION=3 ../
 #else
-%cmake -DUSE_PYTHON_VERSION=3 -DCMAKE_VERBOSE_MAKEFILE:BOOL=ON
+%cmake -DUSE_PYTHON_VERSION=3 -DCMAKE_VERBOSE_MAKEFILE:BOOL=ON -DBUILD_TESTS:BOOL=ON
 #endif
+
+# Generate a build_history entry (for tests) manually, since we're performing
+# a cmake build.
+TODAY=$(date -Id)
+mkdir build_history/$TODAY
+echo $PWD/%{__cmake_builddir}/sources > build_history/$TODAY/build_dir.txt
 
 %cmake_build
 
@@ -234,11 +252,16 @@ pathfix.py -pni "%{__python3} %{py3_shbang_opts}" %{buildroot}%{_bindir}/*
 
 
 %check
-# Do basic import test
+# Do basic import test (even without the test bcond)
+export LD_LIBRARY_PATH="%{buildroot}%{_libdir}"
 %py3_check_import PySide2
 %py3_check_import shiboken2
-# Lots of tests fail currently
-#{__python3} testrunner.py test
+
+%if %{with tests}
+export PYTHONPATH="%{buildroot}%{python3_sitearch}:%{buildroot}%{python3_sitelib}"
+export PYTHONDONTWRITEBYTECODE=1
+xvfb-run %{__python3} testrunner.py test
+%endif
 
 
 %files -n python3-%{pypi_name}
@@ -285,8 +308,9 @@ pathfix.py -pni "%{__python3} %{py3_shbang_opts}" %{buildroot}%{_bindir}/*
 
 
 %changelog
-* Mon Jun 13 2022 Python Maint <python-maint@redhat.com> - 1:5.15.2.1-5
+* Wed Jun 29 2022 Python Maint <python-maint@redhat.com> - 1:5.15.2.1-5
 - Rebuilt for Python 3.11
+- Build and run the test suite
 
 * Tue May 17 2022 Jan Grulich <jgrulich@redhat.com> - 1:5.15.2.1-4
 - Rebuild (qt5)
