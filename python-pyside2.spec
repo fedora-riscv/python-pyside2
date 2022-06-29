@@ -189,7 +189,7 @@ the previous versions (without the 2) refer to Qt 4.
 . /opt/rh/devtoolset-7/enable
 . /opt/rh/llvm-toolset-7/enable
 %else
-export CXX=/usr/bin/clang++
+export CXX=$(which clang++)
 %endif
 
 #if 0%{?rhel} || 0%{?fedora} < 33
