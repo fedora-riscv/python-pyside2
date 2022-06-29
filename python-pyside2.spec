@@ -32,8 +32,14 @@ Patch3:         python3.10.patch
 Patch4:         https://raw.githubusercontent.com/NixOS/nixpkgs/master/pkgs/development/python-modules/shiboken2/nix_compile_cflags.patch
 
 # Python 3.11
-# https://code.qt.io/cgit/pyside/pyside-setup.git/patch/?id=52df3b8f64
-# https://code.qt.io/cgit/pyside/pyside-setup.git/patch/?id=73adefe22f (different, but same purpose)
+# - Fix a crash in Shiboken::Object::isValid():
+#   https://code.qt.io/cgit/pyside/pyside-setup.git/patch/?id=52df3b8f64
+# - Fix usage of Py_TYPE() for Python 3.11
+#   https://code.qt.io/cgit/pyside/pyside-setup.git/patch/?id=73adefe22f (different, but same purpose)
+# - Fix crashes with static strings in Python 3.11:
+#   https://code.qt.io/cgit/pyside/pyside-setup.git/patch/?id=a09a1db8391243e6bb290ee66bb6e3afbb114c61
+# - Add Python 3.11 to the list of supported versions
+#   (not sent upstream)
 Patch5:         python3.11.patch
 
 %if 0%{?rhel} == 7
