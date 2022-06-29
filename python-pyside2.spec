@@ -190,7 +190,7 @@ export CXX=/usr/bin/clang++
 #mkdir %{_target} && cd %{_target}
 #cmake -DUSE_PYTHON_VERSION=3 ../
 #else
-%cmake -DUSE_PYTHON_VERSION=3
+%cmake -DUSE_PYTHON_VERSION=3 -DCMAKE_VERBOSE_MAKEFILE:BOOL=ON
 #endif
 
 %cmake_build
