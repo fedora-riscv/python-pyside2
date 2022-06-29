@@ -15,8 +15,8 @@ diff -rU3 pyside-setup-opensource-src-5.15.2-orig/CMakeLists.txt pyside-setup-op
  project(pyside2_super_project)
 diff -rU3 pyside-setup-opensource-src-5.15.2-orig/build_history/blacklist.txt pyside-setup-opensource-src-5.15.2/build_history/blacklist.txt
 --- pyside-setup-opensource-src-5.15.2-orig/build_history/blacklist.txt	2022-01-05 14:26:23.000000000 +0100
-+++ pyside-setup-opensource-src-5.15.2/build_history/blacklist.txt	2022-06-29 18:13:22.041461997 +0200
-@@ -96,3 +96,67 @@
++++ pyside-setup-opensource-src-5.15.2/build_history/blacklist.txt	2022-06-29 19:16:57.628215409 +0200
+@@ -96,3 +96,75 @@
  # Open GL functions failures on macOS (2/2020)
  [registry::existence_test]
      darwin
@@ -83,4 +83,12 @@ diff -rU3 pyside-setup-opensource-src-5.15.2-orig/build_history/blacklist.txt py
 +[QtCore::qflags_test]
 +    linux
 +[QtQml::javascript_exceptions]
++    linux
++
++# i686
++[QtWebEngineWidgets::pyside-474-qtwebengineview]
++    linux
++
++# s390x
++[QtCore::qbytearray_test]
 +    linux
