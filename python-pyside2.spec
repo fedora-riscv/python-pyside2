@@ -12,7 +12,7 @@
 Name:           python-%{pypi_name}
 Epoch:          1
 Version:        5.15.2.1
-Release:        5%{?dist}
+Release:        6%{?dist}
 Summary:        Python bindings for the Qt 5 cross-platform application and UI framework
 
 License:        BSD and GPLv2 and GPLv3 and LGPLv3
@@ -308,6 +308,9 @@ xvfb-run %{__python3} testrunner.py test
 
 
 %changelog
+* Thu Jul 14 2022 Jan Grulich <jgrulich@redhat.com> - 1:5.15.2.1-6
+- Rebuild (qt5)
+
 * Wed Jun 29 2022 Python Maint <python-maint@redhat.com> - 1:5.15.2.1-5
 - Rebuilt for Python 3.11
 - Build and run the test suite
