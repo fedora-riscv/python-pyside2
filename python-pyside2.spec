@@ -100,6 +100,7 @@ BuildRequires:  cmake(Qt5UiPlugin) >= %{qt5ver}
 %if %{with tests}
 # Tests use a fake graphical environment
 BuildRequires:  /usr/bin/xvfb-run
+BuildRequires:  mesa-dri-drivers
 %endif
 
 
@@ -204,12 +205,7 @@ the previous versions (without the 2) refer to Qt 4.
 export CXX=$(which clang++)
 %endif
 
-#if 0%{?rhel} || 0%{?fedora} < 33
-#mkdir %{_target} && cd %{_target}
-#cmake -DUSE_PYTHON_VERSION=3 ../
-#else
 %cmake -DUSE_PYTHON_VERSION=3 -DCMAKE_VERBOSE_MAKEFILE:BOOL=ON -DBUILD_TESTS:BOOL=ON
-#endif
 
 # Generate a build_history entry (for tests) manually, since we're performing
 # a cmake build.
@@ -221,13 +217,7 @@ echo $PWD/%{__cmake_builddir}/sources > build_history/$TODAY/build_dir.txt
 
 
 %install
-#if 0%{?rhel} || 0%{?fedora} < 33
-#    pushd %{__cmake_builddir}
-#    cmake_install
-#    popd
-#else
-    %cmake_install
-#endif
+%cmake_install
 
 #
 # Generate egg-info manually and install since we're performing a cmake build.
