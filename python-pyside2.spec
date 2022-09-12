@@ -181,24 +181,13 @@ the previous versions (without the 2) refer to Qt 4.
 export CXX=/usr/bin/clang++
 %endif
 
-#if 0%{?rhel} || 0%{?fedora} < 33
-#mkdir %{_target} && cd %{_target}
-#cmake -DUSE_PYTHON_VERSION=3 ../
-#else
 %cmake -DUSE_PYTHON_VERSION=3
-#endif
 
 %cmake_build
 
 
 %install
-#if 0%{?rhel} || 0%{?fedora} < 33
-#    pushd %{__cmake_builddir}
-#    cmake_install
-#    popd
-#else
-    %cmake_install
-#endif
+%cmake_install
 
 #
 # Generate egg-info manually and install since we're performing a cmake build.
@@ -226,8 +215,9 @@ pathfix.py -pni "%{__python3} %{py3_shbang_opts}" %{buildroot}%{_bindir}/*
 # Lots of tests fail currently
 #{__python3} testrunner.py test
 # Do basic import test instead
-#py3_check_import PySide2
-#py3_check_import shiboken2
+export LD_LIBRARY_PATH="%{buildroot}%{_libdir}"
+%py3_check_import PySide2
+%py3_check_import shiboken2
 
 
 %files -n python3-%{pypi_name}
