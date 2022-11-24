@@ -6,10 +6,13 @@
 %global camel_name PySide2
 %global qt5ver 5.14
 
+# Pass `--without tests` to rpmbuild or mock to skip the test suite
+%bcond_without tests
+
 Name:           python-%{pypi_name}
 Epoch:          1
-Version:        5.15.2.1
-Release:        4%{?dist}
+Version:        5.15.7
+Release:        1%{?dist}
 Summary:        Python bindings for the Qt 5 cross-platform application and UI framework
 
 License:        BSD and GPLv2 and GPLv3 and LGPLv3
@@ -19,26 +22,34 @@ Source0:        https://download.qt.io/official_releases/QtForPython/%{pypi_name
 
 # PySide2 tools are "reinstalled" for pip installs but breaks distro builds.
 Patch0:         pyside2-tools-obsolete.patch
-# Don't abort the build on Python 3.8/3.9
-#Patch1:         python_ver_classifier.patch
 # setuptools --reuse-build option was broken in 5.15.2
 Patch2:         python-pyside2-options_py.patch
 
-# A (possibly incomplete) patch with Python 3.10 compatibility
-# Backported from https://codereview.qt-project.org/c/pyside/pyside-setup/+/348390
-# Inlined _Py_Mangle from CPython sources
-Patch3:         python3.10.patch
 # Work around clang assumptions on header types, .h==c, not c++.
 Patch4:         https://raw.githubusercontent.com/NixOS/nixpkgs/master/pkgs/development/python-modules/shiboken2/nix_compile_cflags.patch
 
-%if 0%{?rhel} == 7
+# Python 3.11
+# - Fix a crash in Shiboken::Object::isValid():
+#   https://code.qt.io/cgit/pyside/pyside-setup.git/patch/?id=52df3b8f64
+# - Fix usage of Py_TYPE() for Python 3.11
+#   https://code.qt.io/cgit/pyside/pyside-setup.git/patch/?id=73adefe22f (different, but same purpose)
+# - Fix crashes with static strings in Python 3.11:
+#   https://code.qt.io/cgit/pyside/pyside-setup.git/patch/?id=a09a1db8391243e6bb290ee66bb6e3afbb114c61
+# - Add Python 3.11 to the list of supported versions
+#   (not sent upstream)
+Patch5:         python3.11.patch
+
+# Enable tests in the CMake build
+# This also adds known test failures to blacklist.txt
+Patch:          build-tests.patch
+
+%if 0%{?rhel} && 0%{?rhel} < 8
 BuildRequires:  llvm-toolset-7-clang-devel llvm-toolset-7-llvm-devel
 BuildRequires:  cmake3
 %endif
 BuildRequires:  cmake
 BuildRequires:  gcc graphviz
 BuildRequires:  clang-devel llvm-devel
-BuildRequires:  /usr/bin/pathfix.py
 BuildRequires:  libxml2-devel
 BuildRequires:  libxslt-devel
 BuildRequires:  python3-devel
@@ -57,9 +68,7 @@ BuildRequires:  cmake(Qt5X11Extras) >= %{qt5ver}
 # PySide2
 BuildRequires:  qt5-qtbase-private-devel >= %{qt5ver}
 BuildRequires:  cmake(Qt5Charts) >= %{qt5ver}
-%if 0%{?fedora} > 32
 BuildRequires:  cmake(Qt5DataVisualization) >= %{qt5ver}
-%endif
 BuildRequires:  cmake(Qt5Multimedia) >= %{qt5ver}
 BuildRequires:  cmake(Qt5QuickControls2) >= %{qt5ver}
 BuildRequires:  cmake(Qt5RemoteObjects) >= %{qt5ver}
@@ -78,6 +87,12 @@ BuildRequires:  cmake(Qt53DCore) >= %{qt5ver}
 BuildRequires:  cmake(Qt5Designer) >= %{qt5ver}
 BuildRequires:  cmake(Qt5Help) >= %{qt5ver}
 BuildRequires:  cmake(Qt5UiPlugin) >= %{qt5ver}
+
+%if %{with tests}
+# Tests use a fake graphical environment
+BuildRequires:  /usr/bin/xvfb-run
+BuildRequires:  mesa-dri-drivers
+%endif
 
 
 %description
@@ -165,23 +180,29 @@ the previous versions (without the 2) refer to Qt 4.
 
 
 %prep
-%autosetup -p1 -n pyside-setup-opensource-src-5.15.2
+%autosetup -p1 -n pyside-setup-opensource-src-%{version}
 
 
 %build
 # Use cmake3 on EL
 %if 0%{?rhel}
 %global cmake %cmake3
-%endif
 
-%if 0%{?rhel} == 7
+%if 0%{?rhel} < 8
 . /opt/rh/devtoolset-7/enable
 . /opt/rh/llvm-toolset-7/enable
 %else
-export CXX=/usr/bin/clang++
+export CXX=$(which clang++)
+%endif
 %endif
 
-%cmake -DUSE_PYTHON_VERSION=3
+%cmake -DUSE_PYTHON_VERSION=3 -DCMAKE_VERBOSE_MAKEFILE:BOOL=ON -DBUILD_TESTS:BOOL=ON
+
+# Generate a build_history entry (for tests) manually, since we're performing
+# a cmake build.
+TODAY=$(date -Id)
+mkdir build_history/$TODAY
+echo $PWD/%{__cmake_builddir}/sources > build_history/$TODAY/build_dir.txt
 
 %cmake_build
 
@@ -208,16 +229,20 @@ done
 # -n prevents creating ~backup files
 # -i specifies the interpreter for the shebang
 # Need to list files that do not match ^[a-zA-Z0-9_]+\.py$ explicitly!
-pathfix.py -pni "%{__python3} %{py3_shbang_opts}" %{buildroot}%{_bindir}/*
+%py3_shebang_fix %{buildroot}%{_bindir}/*
 
 
 %check
-# Lots of tests fail currently
-#{__python3} testrunner.py test
-# Do basic import test instead
+# Do basic import test (even without the test bcond)
 export LD_LIBRARY_PATH="%{buildroot}%{_libdir}"
 %py3_check_import PySide2
 %py3_check_import shiboken2
+
+%if %{with tests}
+export PYTHONPATH="%{buildroot}%{python3_sitearch}:%{buildroot}%{python3_sitelib}"
+export PYTHONDONTWRITEBYTECODE=1
+xvfb-run %{__python3} testrunner.py test
+%endif
 
 
 %files -n python3-%{pypi_name}
@@ -264,10 +289,23 @@ export LD_LIBRARY_PATH="%{buildroot}%{_libdir}"
 
 
 %changelog
-* Mon Jul 25 2022 Jan Grulich <jgrulich@redhat.com> - 1:5.15.2.1-4
+* Thu Nov 24 2022 Richard Shaw <hobbes1069@gmail.com> - 1:5.15.7-1
+- Update to 5.15.7.
+
+* Fri Jul 22 2022 Fedora Release Engineering <releng@fedoraproject.org> - 1:5.15.2.1-7
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_37_Mass_Rebuild
+
+* Thu Jul 14 2022 Jan Grulich <jgrulich@redhat.com> - 1:5.15.2.1-6
 - Rebuild (qt5)
 
-* Tue Mar 22 2022 Jan Grulich <jgrulich@redhat.com> - 1:5.15.2.1-3
+* Wed Jun 29 2022 Python Maint <python-maint@redhat.com> - 1:5.15.2.1-5
+- Rebuilt for Python 3.11
+- Build and run the test suite
+
+* Tue May 17 2022 Jan Grulich <jgrulich@redhat.com> - 1:5.15.2.1-4
+- Rebuild (qt5)
+
+* Tue Mar 08 2022 Jan Grulich <jgrulich@redhat.com> - 1:5.15.2.1-3
 - Rebuild (qt5)
 
 * Wed Feb 02 2022 Richard Shaw <hobbes1069@gmail.com> - 1:5.15.2.1-2

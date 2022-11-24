@@ -1,8 +1,10 @@
---- pyside-setup-everywhere-src-5.12.6/sources/shiboken2/ApiExtractor/clangparser/compilersupport.cpp~	2020-07-08 14:37:13.022476435 -0700
-+++ pyside-setup-everywhere-src-5.12.6/sources/shiboken2/ApiExtractor/clangparser/compilersupport.cpp	2020-07-08 14:37:18.271484269 -0700
-@@ -330,17 +330,15 @@
-     }
- #endif // NEED_CLANG_BUILTIN_INCLUDES
+Index: pyside-setup-opensource-src-5.15.7/sources/shiboken2/ApiExtractor/clangparser/compilersupport.cpp
+===================================================================
+--- pyside-setup-opensource-src-5.15.7.orig/sources/shiboken2/ApiExtractor/clangparser/compilersupport.cpp
++++ pyside-setup-opensource-src-5.15.7/sources/shiboken2/ApiExtractor/clangparser/compilersupport.cpp
+@@ -345,17 +345,15 @@ QByteArrayList emulatedCompilerOptions()
+     appendClangBuiltinIncludes(&headerPaths);
+ #  endif // NEED_CLANG_BUILTIN_INCLUDES
  
 -    // Append the c++ include paths since Clang is unable to find <list> etc
 -    // on RHEL 7 with g++ 6.3 or CentOS 7.2.
@@ -27,4 +29,3 @@
          }
      }
  #else
-
