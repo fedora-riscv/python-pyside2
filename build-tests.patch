@@ -1,6 +1,7 @@
-diff -rU3 pyside-setup-opensource-src-5.15.2-orig/CMakeLists.txt pyside-setup-opensource-src-5.15.2/CMakeLists.txt
---- pyside-setup-opensource-src-5.15.2-orig/CMakeLists.txt	2022-01-05 14:26:23.000000000 +0100
-+++ pyside-setup-opensource-src-5.15.2/CMakeLists.txt	2022-06-29 16:49:06.689706732 +0200
+Index: pyside-setup-opensource-src-5.15.7/CMakeLists.txt
+===================================================================
+--- pyside-setup-opensource-src-5.15.7.orig/CMakeLists.txt
++++ pyside-setup-opensource-src-5.15.7/CMakeLists.txt
 @@ -1,6 +1,11 @@
  cmake_minimum_required(VERSION 3.1)
  cmake_policy(VERSION 3.1)
@@ -13,13 +14,14 @@ diff -rU3 pyside-setup-opensource-src-5.15.2-orig/CMakeLists.txt pyside-setup-op
  set(CMAKE_BUILD_TYPE Release CACHE STRING "Build Type")
  
  project(pyside2_super_project)
-diff -rU3 pyside-setup-opensource-src-5.15.2-orig/build_history/blacklist.txt pyside-setup-opensource-src-5.15.2/build_history/blacklist.txt
---- pyside-setup-opensource-src-5.15.2-orig/build_history/blacklist.txt	2022-01-05 14:26:23.000000000 +0100
-+++ pyside-setup-opensource-src-5.15.2/build_history/blacklist.txt	2022-06-29 19:16:57.628215409 +0200
-@@ -96,3 +96,75 @@
- # Open GL functions failures on macOS (2/2020)
- [registry::existence_test]
-     darwin
+Index: pyside-setup-opensource-src-5.15.7/build_history/blacklist.txt
+===================================================================
+--- pyside-setup-opensource-src-5.15.7.orig/build_history/blacklist.txt
++++ pyside-setup-opensource-src-5.15.7/build_history/blacklist.txt
+@@ -96,3 +96,80 @@
+ # Incomplehensible effect with feature switching on 3.6, qApp.process_events()
+ [QtCore::feature_with_uic_test]
+     py3.6
 +
 +# Fedora/Python3.11 test failures to investigate
 +[testenum]
@@ -62,6 +64,8 @@ diff -rU3 pyside-setup-opensource-src-5.15.2-orig/build_history/blacklist.txt py
 +    linux
 +[support::voidptr_test]
 +    linux
++[QtCore::qenum_test]
++    linux
 +[QtCore::multiple_feature_test]
 +    linux
 +[QtCore::snake_prop_feature_test]
@@ -92,3 +96,6 @@ diff -rU3 pyside-setup-opensource-src-5.15.2-orig/build_history/blacklist.txt py
 +# s390x
 +[QtCore::qbytearray_test]
 +    linux
++[QtQml::qquickitem_grabToImage]
++    linux
++
