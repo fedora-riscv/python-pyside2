@@ -43,7 +43,7 @@ Patch5:         python3.11.patch
 # This also adds known test failures to blacklist.txt
 Patch:          build-tests.patch
 
-%if 0%{?rhel} < 8
+%if 0%{?rhel} && 0%{?rhel} < 8
 BuildRequires:  llvm-toolset-7-clang-devel llvm-toolset-7-llvm-devel
 BuildRequires:  cmake3
 %endif
@@ -187,13 +187,13 @@ the previous versions (without the 2) refer to Qt 4.
 # Use cmake3 on EL
 %if 0%{?rhel}
 %global cmake %cmake3
-%endif
 
 %if 0%{?rhel} < 8
 . /opt/rh/devtoolset-7/enable
 . /opt/rh/llvm-toolset-7/enable
 %else
 export CXX=$(which clang++)
+%endif
 %endif
 
 %cmake -DUSE_PYTHON_VERSION=3 -DCMAKE_VERBOSE_MAKEFILE:BOOL=ON -DBUILD_TESTS:BOOL=ON
