@@ -12,7 +12,7 @@
 Name:           python-%{pypi_name}
 Epoch:          1
 Version:        5.15.7
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Python bindings for the Qt 5 cross-platform application and UI framework
 
 License:        BSD and GPLv2 and GPLv3 and LGPLv3
@@ -79,7 +79,7 @@ BuildRequires:  cmake(Qt5SerialPort) >= %{qt5ver}
 BuildRequires:  cmake(Qt5Svg) >= %{qt5ver}
 BuildRequires:  cmake(Qt5TextToSpeech) >= %{qt5ver}
 BuildRequires:  cmake(Qt5XmlPatterns) >= %{qt5ver}
-%ifnarch ppc64le s390x
+%ifnarch ppc64le s390x riscv64
 BuildRequires:  cmake(Qt5WebEngine) >= %{qt5ver}
 %endif
 BuildRequires:  cmake(Qt5WebSockets) >= %{qt5ver}
@@ -289,6 +289,9 @@ xvfb-run %{__python3} testrunner.py test
 
 
 %changelog
+* Sun Aug 13 2023 Songsong Zhang <U2FsdGVkX1@gmail.com> - 1:5.15.7-3
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_38_Mass_Rebuild
+
 * Fri Jan 20 2023 Fedora Release Engineering <releng@fedoraproject.org> - 1:5.15.7-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_38_Mass_Rebuild
 
